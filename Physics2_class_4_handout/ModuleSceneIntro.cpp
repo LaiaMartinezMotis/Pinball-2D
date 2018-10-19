@@ -6,6 +6,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "ChainList.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -26,7 +27,11 @@ bool ModuleSceneIntro::Start()
 	circle = App->textures->Load("pinball/wheel.png"); 
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
+	scenario = App->textures->Load("pinball/scenario.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+
+	background = App->physics->CreateChain(0, 0, scenario_points, 320);
+	background->body->SetType(b2_staticBody);
 
 	return ret;
 }
@@ -35,13 +40,19 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
-
+	App->textures->Unload(circle);
+	App->textures->Unload(box);
+	App->textures->Unload(rick);
+	App->textures->Unload(scenario);
 	return true;
 }
 
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	//Print background layer
+	App->renderer->Blit(scenario, 0, 0, NULL, 1.0f);
+
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
