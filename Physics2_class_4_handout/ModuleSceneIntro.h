@@ -3,6 +3,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
+#include "Box2D/Box2D/Box2D.h"
 
 class PhysBody;
 
@@ -25,9 +26,12 @@ public:
 	p2List<PhysBody*>	pb_background_elements;
 	PhysBody*			pb_ball;
 	PhysBody*			pb_background;
+	PhysBody*			pb_right_flipper;
+	PhysBody*			pb_left_flipper;
 
 	SDL_Texture* circle;
 	SDL_Texture* ball;
 	SDL_Texture* scenario;
+	SDL_Texture* background_elements;
 	uint bonus_fx;
 };

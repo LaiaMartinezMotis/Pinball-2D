@@ -28,6 +28,7 @@ bool ModuleSceneIntro::Start()
 	circle = App->textures->Load("pinball/wheel.png"); 
 	scenario = App->textures->Load("pinball/scenario.png");
 	ball = App->textures->Load("pinball/ball.png");
+	background_elements = App->textures->Load("pinball/background_elements.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	//Create Physbodys
@@ -42,6 +43,7 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 	App->textures->Unload(circle);
 	App->textures->Unload(ball);
+	App->textures->Unload(background_elements);
 	App->textures->Unload(scenario);
 	return true;
 }
@@ -81,6 +83,22 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 
+	if (pb_right_flipper != NULL)
+	{
+		int x, y;
+		pb_right_flipper->GetPosition(x, y);
+		SDL_Rect rect = { 0,45,69,36 };
+		App->renderer->Blit(background_elements, x + 235, y + 741, &rect, 1.0f, pb_right_flipper->GetRotation());
+	}
+
+	if (pb_left_flipper != NULL)
+	{
+		int x, y;
+		pb_left_flipper->GetPosition(x, y);
+		SDL_Rect rect = { 0,0,68,36 };
+		App->renderer->Blit(background_elements, x + 146, y + 741, &rect, 1.0f, pb_left_flipper->GetRotation());
+	}
+
 	if (pb_ball != NULL)
 	{
 		int x, y;
@@ -93,7 +111,7 @@ update_status ModuleSceneIntro::Update()
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
-	App->audio->PlayFx(bonus_fx);
+	//App->audio->PlayFx(bonus_fx);
 }
 
 //Load Map
@@ -102,6 +120,10 @@ bool ModuleSceneIntro::LoadMap()
 
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
 	pb_background->body->SetType(b2_staticBody);
+	pb_right_flipper = App->physics->CreateChain(0, 0, right_flipper, 20);
+	pb_right_flipper->body->SetType(b2_staticBody);
+	pb_left_flipper = App->physics->CreateChain(0, 0, left_flipper, 22);
+	pb_left_flipper->body->SetType(b2_staticBody);
 
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_10000, 14));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 58));
@@ -116,6 +138,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background_elements.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_1, 18));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_2, 18));
+
 	p2List_item<PhysBody*>* back_elem = pb_background_elements.getFirst();
 	while (back_elem != NULL)
 	{
