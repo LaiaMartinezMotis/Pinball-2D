@@ -3,16 +3,16 @@
 #include "Globals.h"
 #include "p2Point.h"
 
-class ModulePlayer : public Module
+class ModuleUI : public Module
 {
 public:
-	ModulePlayer(Application* app, bool start_enabled = true);
-	virtual ~ModulePlayer();
+	ModuleUI(Application* app, bool start_enabled = true);
+	virtual ~ModuleUI();
 
 	bool Start();
 	update_status Update();
 	bool CleanUp();
 
 public:
-
+	int score_font = 0;
 };

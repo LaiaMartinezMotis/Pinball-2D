@@ -5,7 +5,7 @@
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
-#include "ModulePlayer.h"
+#include "ModuleUI.h"
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleFonts.h"
@@ -19,7 +19,7 @@ Application::Application()
 	textures = new ModuleTextures(this);
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
-	player = new ModulePlayer(this);
+	ui = new ModuleUI(this);
 	scene_intro = new ModuleSceneIntro(this);
 	physics = new ModulePhysics(this);
 	fonts = new ModuleFonts(this);
@@ -40,8 +40,8 @@ Application::Application()
 	// Scenes
 	AddModule(scene_intro);
 	
-	// Player
-	AddModule(player);
+	// UI
+	AddModule(ui);
 }
 
 Application::~Application()
