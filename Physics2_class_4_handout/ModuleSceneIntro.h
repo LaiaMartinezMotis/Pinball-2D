@@ -28,6 +28,11 @@ public:
 	PhysBody*			pb_background;
 	PhysBody*			pb_right_flipper;
 	PhysBody*			pb_left_flipper;
+	PhysBody*           pb_right_slingshot;
+	PhysBody*           pb_left_slingshot;
+	b2RevoluteJoint*    right_joint;
+	b2RevoluteJoint*    left_joint;
+	
 
 	SDL_Texture* circle;
 	SDL_Texture* ball;

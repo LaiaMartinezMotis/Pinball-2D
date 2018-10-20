@@ -51,6 +51,45 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+
+	//Revolute Joint
+
+	b2RevoluteJointDef left_flipper;
+	b2RevoluteJointDef right_flipper;
+
+	left_flipper.Initialize(pb_left_flipper->body, pb_left_slingshot->body, pb_left_flipper->body->GetWorldCenter());
+	left_flipper.collideConnected = false;
+
+	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, pb_right_flipper->body->GetWorldCenter());
+	right_flipper.collideConnected = false;
+	
+	left_flipper.referenceAngle = 0;
+	right_flipper.referenceAngle = 0;
+
+
+	left_flipper.enableLimit = true;
+	left_flipper.lowerAngle = 0;
+	left_flipper.upperAngle = 40;
+
+	right_flipper.enableLimit = true;
+	right_flipper.lowerAngle = 0;
+	right_flipper.upperAngle = 40;
+
+	//Turning on the motor
+	left_flipper.enableMotor = true; //is it on?
+	left_flipper.maxMotorTorque = 10.0f;//how powerful?
+	left_flipper.motorSpeed = 0.0f; //how fast?
+
+	right_flipper.enableMotor = true; //is it on?
+	right_flipper.maxMotorTorque = 10.0f;//how powerful?
+    right_flipper.motorSpeed = 0.0f; //how fast?
+
+
+	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
+	right_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&right_flipper);
+
+	
+
 	//Print background layer
 	App->renderer->Blit(scenario, 0, 0, NULL, 1.0f);
 
@@ -120,17 +159,24 @@ bool ModuleSceneIntro::LoadMap()
 
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
 	pb_background->body->SetType(b2_staticBody);
+
 	pb_right_flipper = App->physics->CreateChain(0, 0, right_flipper, 20);
-	pb_right_flipper->body->SetType(b2_staticBody);
+	pb_right_flipper->body->SetType(b2_dynamicBody);
+
 	pb_left_flipper = App->physics->CreateChain(0, 0, left_flipper, 22);
-	pb_left_flipper->body->SetType(b2_staticBody);
+	pb_left_flipper->body->SetType(b2_dynamicBody);
+
+	pb_right_slingshot = App->physics->CreateChain(0, 0, right_slingshot, 16);
+	pb_right_slingshot->body->SetType(b2_staticBody);
+	pb_left_slingshot = App->physics->CreateChain(0, 0, left_slingshot, 16);
+	pb_left_slingshot->body->SetType(b2_staticBody);
+
+	
 
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_10000, 14));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 58));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_bumper, 22));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_bumper, 20));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, right_slingshot, 16));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_blocker, 10));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_bumper, 42));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42));
