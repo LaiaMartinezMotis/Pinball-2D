@@ -17,15 +17,17 @@ public:
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
+private:
+	bool LoadMap();
+
 public:
 	p2List<PhysBody*>	circles;
-	p2List<PhysBody*>	boxes;
-	p2List<PhysBody*>	ricks;
-	PhysBody*			background;
+	p2List<PhysBody*>	pb_background_elements;
+	PhysBody*			pb_ball;
+	PhysBody*			pb_background;
 
 	SDL_Texture* circle;
-	SDL_Texture* box;
-	SDL_Texture* rick;
+	SDL_Texture* ball;
 	SDL_Texture* scenario;
 	uint bonus_fx;
 };
