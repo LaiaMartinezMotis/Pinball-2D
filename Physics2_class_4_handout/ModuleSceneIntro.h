@@ -27,7 +27,12 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
-	p2List<PhysBody*>	pb_bumpers;
+
+	PhysBody*           pb_light_bumper;
+	PhysBody*	        pb_up_bumper;
+	PhysBody*	        pb_middle_bumper_1;
+	PhysBody*	        pb_middle_bumper_2;
+	PhysBody*	        pb_middle_bumper_3;
 	PhysBody*			pb_ball;
 	PhysBody*			pb_background;
 	PhysBody*			pb_right_flipper;
@@ -37,6 +42,7 @@ public:
 	PhysBody*			pb_plunger;
 	PhysBody*			pb_ramp_sensor;
 
+	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
 	b2PrismaticJoint*   plunger_joint;
@@ -52,4 +58,6 @@ public:
 	p2Animation arrows_right;
 	p2Animation arrows_down;
 
+
+	bool light=false;
 };

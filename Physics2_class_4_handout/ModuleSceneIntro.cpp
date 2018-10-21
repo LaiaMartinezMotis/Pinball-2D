@@ -11,6 +11,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	
 	circle = NULL;
 	arrows_left.PushBack({ 58,83,29,34 });
 	arrows_left.PushBack({ 29,83,29,34 });
@@ -95,9 +96,9 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(background_elements, 174, 435, &arrows_left.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 309, 366, &arrows_right.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 370, 546, &arrows_down.GetCurrentFrame(), 1.0F);
-	
 
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
 		circles.getLast()->data->listener = this;
@@ -110,7 +111,7 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// Prepare for raycast ------------------------------------------------------
-	
+
 	iPoint mouse;
 	mouse.x = App->input->GetMouseX();
 	mouse.y = App->input->GetMouseY();
@@ -118,7 +119,7 @@ update_status ModuleSceneIntro::Update()
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
-	while(c != NULL)
+	while (c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
@@ -146,7 +147,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		int x, y;
 		pb_plunger->GetPosition(x, y);
-		SDL_Rect rect = {96,83,19,80};
+		SDL_Rect rect = { 96,83,19,80 };
 		App->renderer->Blit(background_elements, x + 412, y + 650, &rect, 1.0f);
 	}
 
@@ -156,6 +157,14 @@ update_status ModuleSceneIntro::Update()
 		pb_ball->GetPosition(x, y);
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
 	}
+
+	/*if (light = true) {
+		int x, y;
+		pb_light_bumper->GetPosition(x, y);
+		SDL_Rect rect = { 8,233,61,61 };
+		App->renderer->Blit(background_elements, 225,  170, &rect);
+	}*/
+	
 
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
@@ -175,16 +184,29 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			red_item = red_item->next;
 		}
+		if (bodyB == pb_up_bumper)
+		{
+			App->ui->score_player += 500;
+		}
+		if (bodyB == pb_middle_bumper_1)
+		{
+			App->ui->score_player += 200;
+		}
+		if (bodyB == pb_middle_bumper_2)
+		{
+			App->ui->score_player += 100;
 
-		p2List_item<PhysBody*>* bump_item = pb_bumpers.getFirst();
-		while (bump_item != NULL) {
-			if (bodyB == bump_item->data)
-			{
-				App->ui->score_player += 500;
-			}
-			bump_item = bump_item->next;
+		}
+		while
+			(bodyB == pb_middle_bumper_3)
+		{
+			/*light = true;*/
+			App->ui->score_player += 500;
+
+			
 		}
 	}
+	/*light=false;*/
 }
 
 //Load Map
@@ -224,23 +246,36 @@ bool ModuleSceneIntro::LoadMap()
 
 	//Define Bumper Physbodys
 
-	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8);
-	pb_ramp_sensor->body->SetType(b2_staticBody);
-	pb_ramp_sensor->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_up_bumper = App->physics->CreateChain(0, 0, up_bumper, 42);
+	pb_up_bumper->body->SetType(b2_staticBody);
+	pb_up_bumper->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_up_bumper->body->GetFixtureList()->SetFriction(0.2F);
 
-	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42));
-	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42));
-	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44));
-	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44));
 
-	p2List_item<PhysBody*>* bump_elem = pb_bumpers.getFirst();
-	while (bump_elem != NULL)
-	{
-		bump_elem->data->body->SetType(b2_staticBody);
-		bump_elem->data->body->GetFixtureList()->SetRestitution(1.0F);
-		bump_elem->data->body->GetFixtureList()->SetFriction(0.2F);
-		bump_elem = bump_elem->next;
-	}
+
+	pb_middle_bumper_1 = App->physics->CreateChain(0, 0, middle_bumper_1, 42);
+	pb_middle_bumper_1->body->SetType(b2_staticBody);
+	pb_middle_bumper_1->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_middle_bumper_1->body->GetFixtureList()->SetFriction(0.2F);
+
+
+	pb_middle_bumper_2 = App->physics->CreateChain(0, 0, middle_bumper_2, 44);
+	pb_middle_bumper_2->body->SetType(b2_staticBody);
+	pb_middle_bumper_2->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_middle_bumper_2->body->GetFixtureList()->SetFriction(0.2F);
+
+
+	pb_middle_bumper_3 = App->physics->CreateChain(0, 0, middle_bumper_3, 44);
+	pb_middle_bumper_3->body->SetType(b2_staticBody);
+	pb_middle_bumper_3->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_middle_bumper_3->body->GetFixtureList()->SetFriction(0.2F);
+
+
+		//pb_light_bumper = App->physics->CreateChain(215, -60, bump_light, 50);
+		//pb_light_bumper->body->SetType(b2_staticBody);
+		//pb_light_bumper->body->GetFixtureList()->SetRestitution(1.0F);
+		//pb_light_bumper->body->GetFixtureList()->SetFriction(0.2F);
+	
 
 	//Define Sensors
 	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 570, 30, 15));
