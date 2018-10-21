@@ -69,11 +69,11 @@ update_status ModuleSceneIntro::PreUpdate()
 	//Flippers Movement
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		
-		pb_left_flipper->body->ApplyAngularImpulse(-1.5F, true);
+		pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
 
-		pb_right_flipper->body->ApplyAngularImpulse(1.5F, true);
+		pb_right_flipper->body->ApplyAngularImpulse(2.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
 	{
@@ -131,7 +131,7 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		pb_right_flipper->GetPosition(x, y);
 		SDL_Rect rect = { 0,45,69,36 };
-		App->renderer->Blit(background_elements, x + 235, y + 741, &rect, 1.0f, pb_right_flipper->GetRotation());
+		App->renderer->Blit(background_elements, 235, 740, &rect, 1.0f, pb_right_flipper->GetRotation() + 20, 65, 10);
 	}
 
 	if (pb_left_flipper != NULL)
@@ -139,7 +139,7 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		pb_left_flipper->GetPosition(x, y);
 		SDL_Rect rect = { 0,0,68,36 };
-		App->renderer->Blit(background_elements, x + 146, y + 741, &rect, 1.0f, pb_left_flipper->GetRotation());
+		App->renderer->Blit(background_elements, 150, 740, &rect, 1.0f, pb_left_flipper->GetRotation() - 20, 10, 10);
 	}
 
 	if (pb_plunger != NULL)
