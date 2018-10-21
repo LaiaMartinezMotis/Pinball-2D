@@ -14,6 +14,7 @@ public:
 	~ModuleSceneIntro();
 
 	bool Start();
+	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
@@ -32,6 +33,7 @@ public:
 	PhysBody*           pb_left_slingshot;
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
+	
 	
 
 	SDL_Texture* circle;

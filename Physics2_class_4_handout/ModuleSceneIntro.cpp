@@ -47,13 +47,25 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(scenario);
 	return true;
 }
+update_status ModuleSceneIntro::PreUpdate()
+{
+	//Flippers Movement
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+		App->scene_intro->right_joint->SetMotorSpeed(59.0f);
+	
+	}
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP) {
+		App->scene_intro->right_joint->SetMotorSpeed(0.0f);
+	}
+	
 
+	return UPDATE_CONTINUE;
+}
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
 
 	//Revolute Joint
-
 	b2RevoluteJointDef left_flipper;
 	b2RevoluteJointDef right_flipper;
 
@@ -63,30 +75,32 @@ update_status ModuleSceneIntro::Update()
 	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, pb_right_flipper->body->GetWorldCenter());
 	right_flipper.collideConnected = false;
 	
-	left_flipper.referenceAngle = 0;
-	right_flipper.referenceAngle = 0;
-
-
+	/*left_flipper.referenceAngle = 0;
+	right_flipper.referenceAngle = 0;*/
+	
+	
 	left_flipper.enableLimit = true;
-	left_flipper.lowerAngle = 0;
-	left_flipper.upperAngle = 40;
+	left_flipper.lowerAngle = -0.5 * b2_pi;
+	left_flipper.upperAngle = -0.25 * b2_pi;
 
 	right_flipper.enableLimit = true;
-	right_flipper.lowerAngle = 0;
-	right_flipper.upperAngle = 40;
+	right_flipper.lowerAngle = -0.5 * b2_pi;
+	right_flipper.upperAngle = -0.25 * b2_pi;
 
 	//Turning on the motor
 	left_flipper.enableMotor = true; //is it on?
-	left_flipper.maxMotorTorque = 10.0f;//how powerful?
-	left_flipper.motorSpeed = 0.0f; //how fast?
+	left_flipper.maxMotorTorque = 20.0f;//how powerful?
+	left_flipper.motorSpeed = 360 * DEGTORAD; //how fast?
 
 	right_flipper.enableMotor = true; //is it on?
-	right_flipper.maxMotorTorque = 10.0f;//how powerful?
-    right_flipper.motorSpeed = 0.0f; //how fast?
+	right_flipper.maxMotorTorque = 20.0f;//how powerful?
+	right_flipper.motorSpeed = 360 * DEGTORAD; //how fast?
 
 
 	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
 	right_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&right_flipper);
+
+
 
 	
 
