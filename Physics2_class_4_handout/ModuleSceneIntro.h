@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "p2List.h"
 #include "p2Point.h"
+#include "p2Animation.h"
 #include "Globals.h"
 #include "Box2D/Box2D/Box2D.h"
 
@@ -31,14 +32,18 @@ public:
 	PhysBody*			pb_left_flipper;
 	PhysBody*           pb_right_slingshot;
 	PhysBody*           pb_left_slingshot;
+	PhysBody*			pb_plunger;
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
+	b2PrismaticJoint*   plunger_joint;
 	
-	
-
 	SDL_Texture* circle;
 	SDL_Texture* ball;
 	SDL_Texture* scenario;
 	SDL_Texture* background_elements;
 	uint bonus_fx;
+
+	p2Animation arrows_left;
+	p2Animation arrows_right;
+	p2Animation arrows_down;
 };

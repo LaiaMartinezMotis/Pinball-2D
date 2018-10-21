@@ -11,10 +11,25 @@
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	circle = NULL;
+	arrows_left.PushBack({ 58,83,29,34 });
+	arrows_left.PushBack({ 29,83,29,34 });
+	arrows_left.PushBack({ 0,83,29,34 });
+	arrows_left.speed = 0.08F;
+
+	arrows_right.PushBack({ 62,117,31,36 });
+	arrows_right.PushBack({ 31,117,31,36 });
+	arrows_right.PushBack({ 0,117,31,36 });
+	arrows_right.speed = 0.08F;
+
+	arrows_down.PushBack({ 0, 153, 22, 39 });
+	arrows_down.PushBack({ 23, 153, 22, 39 });
+	arrows_down.PushBack({ 46, 153, 22, 39 });
+	arrows_down.speed = 0.08F;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
-{}
+{
+}
 
 // Load assets
 bool ModuleSceneIntro::Start()
@@ -50,12 +65,17 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::PreUpdate()
 {
 	//Flippers Movement
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		
-		//pb_right_flipper->body->ApplyAngularImpulse(100, true);
+		pb_left_flipper->body->ApplyAngularImpulse(100, true);
 	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP) {
-		
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
+	{
+		plunger_joint->SetMotorSpeed((0.0F, 1.0F));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
+	{
+		plunger_joint->SetMotorSpeed((0.0F, -40.0F));
 	}
 	
 
@@ -64,49 +84,11 @@ update_status ModuleSceneIntro::PreUpdate()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-
-	//Revolute Joint
-	b2RevoluteJointDef left_flipper;
-	b2RevoluteJointDef right_flipper;
-
-	left_flipper.Initialize(pb_left_flipper->body, pb_left_slingshot->body, pb_left_flipper->body->GetWorldCenter());
-	left_flipper.collideConnected = false;
-
-	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, pb_right_flipper->body->GetWorldCenter());
-	right_flipper.collideConnected = false;
-	
-	/*left_flipper.referenceAngle = 0;
-	right_flipper.referenceAngle = 0;*/
-	
-	
-	left_flipper.enableLimit = true;
-	left_flipper.lowerAngle = -0.5 * b2_pi;
-	left_flipper.upperAngle = -0.25 * b2_pi;
-
-	right_flipper.enableLimit = true;
-	right_flipper.lowerAngle = -0.5 * b2_pi;
-	right_flipper.upperAngle = -0.25 * b2_pi;
-
-	//Turning on the motor
-	left_flipper.enableMotor = true; //is it on?
-	left_flipper.maxMotorTorque =10.0f;//how powerful?
-	left_flipper.motorSpeed = -10.0f; //how fast?
-
-	right_flipper.enableMotor = true; //is it on?
-	right_flipper.maxMotorTorque = 10.0f;//how powerful?
-	right_flipper.motorSpeed = -10.0f;//how fast?
-
-
-	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
-	right_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&right_flipper);
-
-
-
-
-	
-
 	//Print background layer
 	App->renderer->Blit(scenario, 0, 0, NULL, 1.0f);
+	App->renderer->Blit(background_elements, 174, 435, &arrows_left.GetCurrentFrame(), 1.0F);
+	App->renderer->Blit(background_elements, 309, 366, &arrows_right.GetCurrentFrame(), 1.0F);
+	App->renderer->Blit(background_elements, 370, 546, &arrows_down.GetCurrentFrame(), 1.0F);
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -171,7 +153,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 //Load Map
 bool ModuleSceneIntro::LoadMap()
 {
-
+	//Define Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
 	pb_background->body->SetType(b2_staticBody);
 
@@ -186,7 +168,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_left_slingshot = App->physics->CreateChain(0, 0, left_slingshot, 16);
 	pb_left_slingshot->body->SetType(b2_staticBody);
 
-	
+	pb_plunger = App->physics->CreateChain(0, 0, plunger, 10);
 
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_10000, 14));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 58));
@@ -207,5 +189,55 @@ bool ModuleSceneIntro::LoadMap()
 		back_elem = back_elem->next;
 	}
 
+	//Define Joints
+	//Revolute Joint
+	b2RevoluteJointDef left_flipper;
+	b2RevoluteJointDef right_flipper;
+
+	left_flipper.Initialize(pb_left_flipper->body, pb_left_slingshot->body, {158, 70});
+	left_flipper.collideConnected = false;
+
+	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, {290, 750});
+	right_flipper.collideConnected = false;
+
+	/*left_flipper.referenceAngle = 0;
+	right_flipper.referenceAngle = 0;*/
+
+
+	left_flipper.enableLimit = true;
+	left_flipper.lowerAngle = -0.5 * b2_pi;
+	left_flipper.upperAngle = 0.25 * b2_pi;
+
+	right_flipper.enableLimit = true;
+	right_flipper.lowerAngle = -0.5 * b2_pi;
+	right_flipper.upperAngle = -0.25 * b2_pi;
+
+	//Turning on the motor
+	left_flipper.enableMotor = true; //is it on?
+	left_flipper.maxMotorTorque = 10.0f;//how powerful?
+	left_flipper.motorSpeed = -10.0f; //how fast?
+
+	right_flipper.enableMotor = true; //is it on?
+	right_flipper.maxMotorTorque = 10.0f;//how powerful?
+	right_flipper.motorSpeed = -10.0f;//how fast?
+
+
+	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
+	right_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&right_flipper);
+
+	//Prismatic Joint
+	b2PrismaticJointDef jointDef; 
+	b2Vec2 worldAxis(0.0f, 1.0f); 
+	jointDef.Initialize(App->physics->ground, pb_plunger->body, { 422, 742 }, worldAxis);
+
+	jointDef.enableLimit = true;
+	jointDef.upperTranslation = 1.0F;
+	jointDef.lowerTranslation = -0.5F;
+
+	jointDef.enableMotor = true;
+	jointDef.maxMotorForce = 500.0f;
+	jointDef.motorSpeed = 0.0f;
+
+	plunger_joint = (b2PrismaticJoint*)App->physics->world->CreateJoint(&jointDef);
 	return true;
 }
