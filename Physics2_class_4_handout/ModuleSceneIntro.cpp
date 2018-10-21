@@ -50,12 +50,12 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::PreUpdate()
 {
 	//Flippers Movement
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
-		App->scene_intro->right_joint->SetMotorSpeed(59.0f);
-	
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+		
+		//pb_right_flipper->body->ApplyAngularImpulse(100, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP) {
-		App->scene_intro->right_joint->SetMotorSpeed(0.0f);
+		
 	}
 	
 
@@ -89,16 +89,17 @@ update_status ModuleSceneIntro::Update()
 
 	//Turning on the motor
 	left_flipper.enableMotor = true; //is it on?
-	left_flipper.maxMotorTorque = 20.0f;//how powerful?
-	left_flipper.motorSpeed = 360 * DEGTORAD; //how fast?
+	left_flipper.maxMotorTorque =10.0f;//how powerful?
+	left_flipper.motorSpeed = -10.0f; //how fast?
 
 	right_flipper.enableMotor = true; //is it on?
-	right_flipper.maxMotorTorque = 20.0f;//how powerful?
-	right_flipper.motorSpeed = 360 * DEGTORAD; //how fast?
+	right_flipper.maxMotorTorque = 10.0f;//how powerful?
+	right_flipper.motorSpeed = -10.0f;//how fast?
 
 
 	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
 	right_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&right_flipper);
+
 
 
 
