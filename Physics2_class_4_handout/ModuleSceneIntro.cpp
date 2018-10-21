@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleUI.h"
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
@@ -42,6 +43,7 @@ bool ModuleSceneIntro::Start()
 	//Initialize textures & audio
 	circle = App->textures->Load("pinball/wheel.png"); 
 	scenario = App->textures->Load("pinball/scenario.png");
+	upper_scenario = App->textures->Load("pinball/upper_scenario.png");
 	ball = App->textures->Load("pinball/ball.png");
 	background_elements = App->textures->Load("pinball/background_elements.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
@@ -89,6 +91,7 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(background_elements, 174, 435, &arrows_left.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 309, 366, &arrows_right.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 370, 546, &arrows_down.GetCurrentFrame(), 1.0F);
+	
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -142,12 +145,34 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
 	}
 
+	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
+
 	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	//App->audio->PlayFx(bonus_fx);
+	if (bodyA == pb_ball)
+	{
+		p2List_item<PhysBody*>* red_item = pb_red_lights.getFirst();
+		while (red_item != NULL) {
+			if (bodyB == red_item->data)
+			{
+				App->ui->score_player += 200;
+			}
+			red_item = red_item->next;
+		}
+
+		p2List_item<PhysBody*>* bump_item = pb_bumpers.getFirst();
+		while (bump_item != NULL) {
+			if (bodyB == bump_item->data)
+			{
+				App->ui->score_player += 500;
+			}
+			bump_item = bump_item->next;
+		}
+	}
 }
 
 //Load Map
@@ -175,10 +200,6 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_bumper, 22));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_bumper, 20));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_blocker, 10));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, up_bumper, 42));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_1, 18));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_2, 18));
 
@@ -188,6 +209,34 @@ bool ModuleSceneIntro::LoadMap()
 		back_elem->data->body->SetType(b2_staticBody);
 		back_elem = back_elem->next;
 	}
+
+	//Define Bumper Physbodys
+
+	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8);
+	pb_ramp_sensor->body->SetType(b2_staticBody);
+	pb_ramp_sensor->body->GetFixtureList()->SetRestitution(1.0F);
+
+	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44));
+
+	p2List_item<PhysBody*>* bump_elem = pb_bumpers.getFirst();
+	while (bump_elem != NULL)
+	{
+		bump_elem->data->body->SetType(b2_staticBody);
+		bump_elem->data->body->GetFixtureList()->SetRestitution(3.5F);
+		bump_elem->data->body->GetFixtureList()->SetFriction(1.0F);
+		bump_elem = bump_elem->next;
+	}
+
+	//Define Sensors
+	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 570, 30, 15));
+	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 455, 30, 15));
+	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 340, 30, 15));
+	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 230, 30, 15));
+	pb_red_lights.add(App->physics->CreateRectangleSensor(405, 150, 30, 15));
+	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
 	//Define Joints
 	//Revolute Joint
@@ -199,10 +248,6 @@ bool ModuleSceneIntro::LoadMap()
 
 	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, {290, 750});
 	right_flipper.collideConnected = false;
-
-	/*left_flipper.referenceAngle = 0;
-	right_flipper.referenceAngle = 0;*/
-
 
 	left_flipper.enableLimit = true;
 	left_flipper.lowerAngle = -0.5 * b2_pi;

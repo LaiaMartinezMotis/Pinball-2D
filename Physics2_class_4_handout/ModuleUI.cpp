@@ -30,7 +30,9 @@ bool ModuleUI::CleanUp()
 // Update: draw background
 update_status ModuleUI::Update()
 {
-	App->fonts->BlitText(0, 0, score_font, "0123459876");
+	sprintf_s(score_string, 10, "%1d", score_player);
+
+	App->fonts->BlitText(180, 10, score_font, score_string);
 	return UPDATE_CONTINUE;
 }
 

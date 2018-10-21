@@ -26,6 +26,8 @@ private:
 public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
+	p2List<PhysBody*>	pb_red_lights;
+	p2List<PhysBody*>	pb_bumpers;
 	PhysBody*			pb_ball;
 	PhysBody*			pb_background;
 	PhysBody*			pb_right_flipper;
@@ -33,17 +35,21 @@ public:
 	PhysBody*           pb_right_slingshot;
 	PhysBody*           pb_left_slingshot;
 	PhysBody*			pb_plunger;
+	PhysBody*			pb_ramp_sensor;
+
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
 	b2PrismaticJoint*   plunger_joint;
 	
-	SDL_Texture* circle;
-	SDL_Texture* ball;
-	SDL_Texture* scenario;
-	SDL_Texture* background_elements;
+	SDL_Texture* circle = nullptr;
+	SDL_Texture* ball = nullptr;
+	SDL_Texture* scenario = nullptr;
+	SDL_Texture* upper_scenario = nullptr;
+	SDL_Texture* background_elements = nullptr;
 	uint bonus_fx;
 
 	p2Animation arrows_left;
 	p2Animation arrows_right;
 	p2Animation arrows_down;
+
 };

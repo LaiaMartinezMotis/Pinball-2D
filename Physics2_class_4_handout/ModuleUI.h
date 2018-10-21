@@ -15,4 +15,6 @@ public:
 
 public:
 	int score_font = 0;
+	int score_player = 0;
+	char score_string[10];
 };
