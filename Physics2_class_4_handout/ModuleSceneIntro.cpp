@@ -69,7 +69,7 @@ update_status ModuleSceneIntro::PreUpdate()
 	//Flippers Movement
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		
-		pb_left_flipper->body->ApplyAngularImpulse(100, true);
+		pb_left_flipper->body->ApplyAngularImpulse(-3.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
 	{
@@ -190,10 +190,10 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
 	pb_background->body->SetType(b2_staticBody);
 
-	pb_right_flipper = App->physics->CreateChain(0, 0, right_flipper, 20);
+	pb_right_flipper = App->physics->CreateRectangle(230, 740, 20, 15);
 	pb_right_flipper->body->SetType(b2_dynamicBody);
 
-	pb_left_flipper = App->physics->CreateChain(0, 0, left_flipper, 22);
+	pb_left_flipper = App->physics->CreateRectangle(180,750,60,15);
 	pb_left_flipper->body->SetType(b2_dynamicBody);
 
 	pb_right_slingshot = App->physics->CreateChain(0, 0, right_slingshot, 16);
@@ -250,29 +250,27 @@ bool ModuleSceneIntro::LoadMap()
 	//Revolute Joint
 	b2RevoluteJointDef left_flipper;
 	b2RevoluteJointDef right_flipper;
+	PhysBody* circle_left;
+	circle_left = App->physics->CreateCircle(155, 750, 10);
+	circle_left->body->SetType(b2_staticBody);
 
-	left_flipper.Initialize(pb_left_flipper->body, pb_left_slingshot->body, {158, 70});
+	PhysBody* circle_right;
+	circle_right = App->physics->CreateCircle(300, 750, 10);
+	circle_right->body->SetType(b2_staticBody);
+
+	left_flipper.Initialize(pb_left_flipper->body, circle_left->body, circle_left->body->GetWorldCenter());
 	left_flipper.collideConnected = false;
 
 	right_flipper.Initialize(pb_right_flipper->body, pb_right_slingshot->body, {290, 750});
 	right_flipper.collideConnected = false;
 
 	left_flipper.enableLimit = true;
-	left_flipper.lowerAngle = -0.5 * b2_pi;
+	left_flipper.lowerAngle = -0.15 * b2_pi;
 	left_flipper.upperAngle = 0.25 * b2_pi;
 
 	right_flipper.enableLimit = true;
 	right_flipper.lowerAngle = -0.5 * b2_pi;
 	right_flipper.upperAngle = -0.25 * b2_pi;
-
-	//Turning on the motor
-	left_flipper.enableMotor = true; //is it on?
-	left_flipper.maxMotorTorque = 10.0f;//how powerful?
-	left_flipper.motorSpeed = -10.0f; //how fast?
-
-	right_flipper.enableMotor = true; //is it on?
-	right_flipper.maxMotorTorque = 10.0f;//how powerful?
-	right_flipper.motorSpeed = -10.0f;//how fast?
 
 
 	left_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&left_flipper);
