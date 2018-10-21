@@ -138,6 +138,14 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(background_elements, x + 146, y + 741, &rect, 1.0f, pb_left_flipper->GetRotation());
 	}
 
+	if (pb_plunger != NULL)
+	{
+		int x, y;
+		pb_plunger->GetPosition(x, y);
+		SDL_Rect rect = {96,83,19,80};
+		App->renderer->Blit(background_elements, x + 412, y + 650, &rect, 1.0f);
+	}
+
 	if (pb_ball != NULL)
 	{
 		int x, y;
@@ -277,7 +285,7 @@ bool ModuleSceneIntro::LoadMap()
 
 	jointDef.enableLimit = true;
 	jointDef.upperTranslation = 1.0F;
-	jointDef.lowerTranslation = -0.5F;
+	jointDef.lowerTranslation = 0.0F;
 
 	jointDef.enableMotor = true;
 	jointDef.maxMotorForce = 500.0f;
