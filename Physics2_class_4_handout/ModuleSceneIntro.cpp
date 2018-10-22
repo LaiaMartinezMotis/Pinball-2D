@@ -171,14 +171,24 @@ update_status ModuleSceneIntro::Update()
 		Timer(pb_left_bumper, 400);
 	}
 
-	if (pb_ramp_sensor != NULL && pb_ramp_sensor->light == true)
+	if (pb_launch_ramp != NULL && pb_launch_ramp->light == true)
 	{
 		int x, y;
-		pb_ramp_sensor->GetRealPosition(x, y);
+		pb_launch_ramp->GetRealPosition(x, y);
 		SDL_Rect rect = { 72,2,92,69 };
 		App->renderer->Blit(background_elements, x, y, &rect);
 
-		Timer(pb_ramp_sensor, 200);
+		Timer(pb_launch_ramp, 200);
+	}
+
+	if (pb_ramp != NULL && pb_ramp->light == true)
+	{
+		int x, y;
+		pb_ramp->GetRealPosition(x, y);
+		SDL_Rect rect = { 69, 266, 66, 100 };
+		App->renderer->Blit(background_elements, x, y, &rect);
+
+		Timer(pb_ramp, 200);
 	}
 
 	if (pb_ball != NULL)
@@ -203,7 +213,13 @@ update_status ModuleSceneIntro::Update()
 		bumper = bumper->next;
 	}
 
-
+	if (destroy)
+	{
+		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
+		pb_ball = (App->physics->CreateCircle(414, 626, 10));
+		pb_ball->listener = this;
+		destroy = false;
+	}
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
 	return UPDATE_CONTINUE;
@@ -214,6 +230,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//App->audio->PlayFx(bonus_fx);
 	if (bodyA == pb_ball)
 	{
+		//Lights
 		p2List_item<PhysBody*>* red_item = pb_red_lights.getFirst();
 		while (red_item != NULL) {
 			if (bodyB == red_item->data)
@@ -222,7 +239,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			red_item = red_item->next;
 		}
-
 		p2List_item<PhysBody*>* bumper_item = pb_bumpers.getFirst();
 		while (bumper_item != NULL) {
 			if (bodyB == bumper_item->data)
@@ -240,23 +256,36 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			pb_right_bumper->light = true;
 		}
-		if (bodyB == pb_ramp_sensor)
+		if (bodyB == pb_launch_ramp)
 		{
-			pb_ramp_sensor->light = true;
+			pb_launch_ramp->light = true;
+		}
+		if (bodyB == pb_ramp)
+		{
+			pb_ramp->light = true;
 		}
 		
+		//Death
+		if (bodyB == pb_death_sensor)
+		{
+			destroy = true;
+		}
 	}
 }
 
 //Load Map
 bool ModuleSceneIntro::LoadMap()
 {
+	//Create Ball
+	pb_ball = (App->physics->CreateCircle(414, 626, 10));
+	pb_ball->listener = this;
+
 	//Define Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
 	pb_background->body->SetType(b2_staticBody);
 
-	pb_right_flipper = App->physics->CreateRectangle(270, 748, 60, 15);
-	pb_left_flipper = App->physics->CreateRectangle(180,750,60,15);
+	pb_right_flipper = App->physics->CreateRectangle(270, 746, 62, 13);
+	pb_left_flipper = App->physics->CreateRectangle(180,750,62,13);
 
 	pb_right_bumper = App->physics->CreateChain(0, 0, right_bumper_coll, 6, 277, 606);
 	pb_right_bumper->body->SetType(b2_staticBody);
@@ -289,10 +318,15 @@ bool ModuleSceneIntro::LoadMap()
 
 	//Define Bumper Physbodys
 
-	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8, 77, 277);
-	pb_ramp_sensor->body->SetType(b2_staticBody);
-	pb_ramp_sensor->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_ramp_sensor->body->GetFixtureList()->SetFriction(0.2F);
+	pb_launch_ramp = App->physics->CreateChain(0, 0, launch_ramp_sensor, 8, 77, 277);
+	pb_launch_ramp->body->SetType(b2_staticBody);
+	pb_launch_ramp->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_launch_ramp->body->GetFixtureList()->SetFriction(0.2F);
+
+	pb_ramp = App->physics->CreateChain(0, 0, ramp_sensor, 6, 275, 239);
+	pb_ramp->body->SetType(b2_staticBody);
+	pb_ramp->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_ramp->body->GetFixtureList()->SetFriction(0.2F);
 
 	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42, 40, 40));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42, 147, 195));
@@ -316,16 +350,18 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(405, 150, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
+	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
+
 	//Define Joints
 	//Revolute Joint
 	b2RevoluteJointDef left_flipper;
 	b2RevoluteJointDef right_flipper;
 	PhysBody* circle_left;
-	circle_left = App->physics->CreateCircle(155, 750, 10);
+	circle_left = App->physics->CreateCircle(155, 745, 5);
 	circle_left->body->SetType(b2_staticBody);
 
 	PhysBody* circle_right;
-	circle_right = App->physics->CreateCircle(300, 750, 10);
+	circle_right = App->physics->CreateCircle(300, 745, 5);
 	circle_right->body->SetType(b2_staticBody);
 
 	left_flipper.Initialize(pb_left_flipper->body, circle_left->body, circle_left->body->GetWorldCenter());

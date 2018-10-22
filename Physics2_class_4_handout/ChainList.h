@@ -455,7 +455,7 @@ int plunger[10] = {
 	413, 648
 };
 
-int ramp_sensor[8] = {
+int launch_ramp_sensor[8] = {
 	77, 304,
 	156, 347,
 	161, 339,
@@ -473,6 +473,13 @@ int left_bumper_coll[6] = {
 	159, 705,
 	152, 710
 };
+
+int ramp_sensor[6] = {
+	335, 253,
+	291, 325,
+	297, 329
+};
+
 
 #endif // !__CHAIN_LIST_H__
 

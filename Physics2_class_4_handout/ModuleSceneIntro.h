@@ -37,7 +37,10 @@ public:
 	PhysBody*           pb_right_bumper;
 	PhysBody*           pb_left_bumper;
 	PhysBody*			pb_plunger;
-	PhysBody*			pb_ramp_sensor;
+	PhysBody*			pb_launch_ramp;
+	PhysBody*			pb_ramp;
+
+	PhysBody*			pb_death_sensor;
 	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
@@ -57,5 +60,7 @@ public:
 	bool timer = true;
 	int time_on_entry = 0;
 	int current_time = 0;
+
+	bool destroy = false;
 
 };
