@@ -148,7 +148,7 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		pb_plunger->GetPosition(x, y);
 		SDL_Rect rect = { 96,83,19,80 };
-		App->renderer->Blit(background_elements, x + 412, y + 645, &rect, 1.0f);
+		App->renderer->Blit(background_elements, x + 412, y + 651, &rect, 1.0f);
 	}
 
 	if (pb_right_bumper != NULL && pb_right_bumper->light == true)
@@ -213,6 +213,20 @@ update_status ModuleSceneIntro::Update()
 		bumper = bumper->next;
 	}
 
+	p2List_item<PhysBody*>* little_bumper = pb_little_bumpers.getFirst();
+	while (little_bumper != NULL)
+	{
+		if (little_bumper->data->light == true)
+		{
+			int x, y;
+			little_bumper->data->GetPosition(x, y);
+			SDL_Rect rect = { 167,2,34,34 };
+			App->renderer->Blit(background_elements, x, y - 2, &rect, 1.0f, little_bumper->data->GetRotation());
+			Timer(little_bumper->data, 200);
+		}
+		little_bumper = little_bumper->next;
+	}
+
 	if (destroy)
 	{
 		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
@@ -241,6 +255,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			red_item = red_item->next;
 		}
+
 		p2List_item<PhysBody*>* bumper_item = pb_bumpers.getFirst();
 		while (bumper_item != NULL) {
 			if (bodyB == bumper_item->data)
@@ -250,6 +265,17 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			bumper_item = bumper_item->next;
 		}
+
+		p2List_item<PhysBody*>* little_bumper_item = pb_little_bumpers.getFirst();
+		while (little_bumper_item != NULL) {
+			if (bodyB == little_bumper_item->data)
+			{
+				App->ui->score_player += 500;
+				little_bumper_item->data->light = true;
+			}
+			little_bumper_item = little_bumper_item->next;
+		}
+
 		if (bodyB == pb_left_bumper)
 		{
 			pb_left_bumper->light = true;
@@ -284,8 +310,11 @@ bool ModuleSceneIntro::LoadMap()
 	life = 4;
 
 	//Define Physbodys
-	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
+	pb_background = App->physics->CreateChain(0, 0, scenario_points, 318);
 	pb_background->body->SetType(b2_staticBody);
+
+	pb_purple_ramp = App->physics->CreateChain(0, 0, purple_ramp, 62);
+	pb_purple_ramp->body->SetType(b2_staticBody);
 
 	pb_right_flipper = App->physics->CreateRectangle(270, 746, 62, 13);
 	pb_left_flipper = App->physics->CreateRectangle(180,750,62,13);
@@ -293,17 +322,17 @@ bool ModuleSceneIntro::LoadMap()
 	pb_right_bumper = App->physics->CreateChain(0, 0, right_bumper_coll, 6, 277, 606);
 	pb_right_bumper->body->SetType(b2_staticBody);
 	pb_right_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_right_bumper->body->GetFixtureList()->SetFriction(0.2F);
+	pb_right_bumper->body->GetFixtureList()->SetFriction(0.4F);
 
 	pb_left_bumper = App->physics->CreateChain(0, 0, left_bumper_coll, 6, 105, 605);
 	pb_left_bumper->body->SetType(b2_staticBody);
 	pb_left_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_left_bumper->body->GetFixtureList()->SetFriction(0.2F);
+	pb_left_bumper->body->GetFixtureList()->SetFriction(0.4F);
 
 	pb_plunger = App->physics->CreateChain(0, 0, plunger, 10);
 
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_10000, 14));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 58));
+	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 56));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_bumper, 22));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_bumper, 20));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_blocker, 10));
@@ -311,6 +340,9 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_2, 18));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_slingshot, 16));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
+	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
+	pb_background_elements.add(App->physics->CreateRectangle(33, 423, 6, 18));
+	pb_background_elements.add(App->physics->CreateRectangle(64, 436, 6, 18));
 
 	p2List_item<PhysBody*>* back_elem = pb_background_elements.getFirst();
 	while (back_elem != NULL)
@@ -335,6 +367,19 @@ bool ModuleSceneIntro::LoadMap()
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42, 147, 195));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44, 225, 165));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44, 181, 267));
+
+	pb_little_bumpers.add(App->physics->CreateCircle(23, 465, 15));
+	pb_little_bumpers.add(App->physics->CreateCircle(80, 479, 15));
+	pb_little_bumpers.add(App->physics->CreateCircle(42, 514, 15));
+
+	p2List_item<PhysBody*>* little_bump_elem = pb_little_bumpers.getFirst();
+	while (little_bump_elem != NULL)
+	{
+		little_bump_elem->data->body->SetType(b2_staticBody);
+		little_bump_elem->data->body->GetFixtureList()->SetRestitution(1.0F);
+		little_bump_elem->data->body->GetFixtureList()->SetFriction(0.4F);
+		little_bump_elem = little_bump_elem->next;
+	}
 
 	p2List_item<PhysBody*>* bump_elem = pb_bumpers.getFirst();
 	while (bump_elem != NULL)

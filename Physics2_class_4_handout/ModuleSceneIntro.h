@@ -29,6 +29,7 @@ public:
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
 	p2List<PhysBody*>	pb_bumpers;
+	p2List<PhysBody*>	pb_little_bumpers;
 
 	PhysBody*			pb_ball;
 	PhysBody*			pb_background;
@@ -39,6 +40,7 @@ public:
 	PhysBody*			pb_plunger;
 	PhysBody*			pb_launch_ramp;
 	PhysBody*			pb_ramp;
+	PhysBody*			pb_purple_ramp;
 
 	PhysBody*			pb_death_sensor;
 	
