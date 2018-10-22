@@ -151,6 +151,36 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(background_elements, x + 412, y + 650, &rect, 1.0f);
 	}
 
+	if (pb_right_bumper != NULL && pb_right_bumper->light == true)
+	{
+		int x, y;
+		pb_right_bumper->GetRealPosition(x, y);
+		SDL_Rect rect = {135,192,65,125};
+		App->renderer->Blit(background_elements, x, y, &rect);
+
+		Timer(pb_right_bumper, 400);
+	}
+
+	if (pb_left_bumper != NULL && pb_left_bumper->light == true)
+	{
+		int x, y;
+		pb_left_bumper->GetRealPosition(x, y);
+		SDL_Rect rect = { 135,78,66,112 };
+		App->renderer->Blit(background_elements, x, y, &rect);
+
+		Timer(pb_left_bumper, 400);
+	}
+
+	if (pb_ramp_sensor != NULL && pb_ramp_sensor->light == true)
+	{
+		int x, y;
+		pb_ramp_sensor->GetRealPosition(x, y);
+		SDL_Rect rect = { 72,2,92,69 };
+		App->renderer->Blit(background_elements, x, y, &rect);
+
+		Timer(pb_ramp_sensor, 200);
+	}
+
 	if (pb_ball != NULL)
 	{
 		int x, y;
@@ -168,20 +198,11 @@ update_status ModuleSceneIntro::Update()
 			bumper->data->GetRealPosition(x, y);
 			SDL_Rect rect = { 8,233,61,61 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, bumper->data->GetRotation());
-			if (timer)
-			{
-				time_on_entry = SDL_GetTicks();
-				timer = false;
-			}
-			current_time = SDL_GetTicks() - time_on_entry;
-			if (current_time > 200)
-			{
-				bumper->data->light = false;
-				timer = true;
-			}
+			Timer(bumper->data, 200);
 		}
 		bumper = bumper->next;
 	}
+
 
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
@@ -211,6 +232,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			bumper_item = bumper_item->next;
 		}
+		if (bodyB == pb_left_bumper)
+		{
+			pb_left_bumper->light = true;
+		}
+		if (bodyB == pb_right_bumper)
+		{
+			pb_right_bumper->light = true;
+		}
+		if (bodyB == pb_ramp_sensor)
+		{
+			pb_ramp_sensor->light = true;
+		}
 		
 	}
 }
@@ -223,15 +256,17 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background->body->SetType(b2_staticBody);
 
 	pb_right_flipper = App->physics->CreateRectangle(270, 748, 60, 15);
-	pb_right_flipper->body->SetType(b2_dynamicBody);
-
 	pb_left_flipper = App->physics->CreateRectangle(180,750,60,15);
-	pb_left_flipper->body->SetType(b2_dynamicBody);
 
-	pb_right_slingshot = App->physics->CreateChain(0, 0, right_slingshot, 16);
-	pb_right_slingshot->body->SetType(b2_staticBody);
-	pb_left_slingshot = App->physics->CreateChain(0, 0, left_slingshot, 16);
-	pb_left_slingshot->body->SetType(b2_staticBody);
+	pb_right_bumper = App->physics->CreateChain(0, 0, right_bumper_coll, 6, 277, 606);
+	pb_right_bumper->body->SetType(b2_staticBody);
+	pb_right_bumper->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_right_bumper->body->GetFixtureList()->SetFriction(0.2F);
+
+	pb_left_bumper = App->physics->CreateChain(0, 0, left_bumper_coll, 6, 105, 605);
+	pb_left_bumper->body->SetType(b2_staticBody);
+	pb_left_bumper->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_left_bumper->body->GetFixtureList()->SetFriction(0.2F);
 
 	pb_plunger = App->physics->CreateChain(0, 0, plunger, 10);
 
@@ -242,6 +277,8 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_blocker, 10));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_1, 18));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_2, 18));
+	pb_background_elements.add(App->physics->CreateChain(0, 0, right_slingshot, 16));
+	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
 
 	p2List_item<PhysBody*>* back_elem = pb_background_elements.getFirst();
 	while (back_elem != NULL)
@@ -252,9 +289,10 @@ bool ModuleSceneIntro::LoadMap()
 
 	//Define Bumper Physbodys
 
-	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8);
+	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8, 77, 277);
 	pb_ramp_sensor->body->SetType(b2_staticBody);
 	pb_ramp_sensor->body->GetFixtureList()->SetRestitution(1.0F);
+	pb_ramp_sensor->body->GetFixtureList()->SetFriction(0.2F);
 
 	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42, 40, 40));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42, 147, 195));
@@ -323,4 +361,19 @@ bool ModuleSceneIntro::LoadMap()
 
 	plunger_joint = (b2PrismaticJoint*)App->physics->world->CreateJoint(&jointDef);
 	return true;
+}
+
+void ModuleSceneIntro::Timer(PhysBody* pb, int time)
+{
+	if (timer)
+	{
+		time_on_entry = SDL_GetTicks();
+		timer = false;
+	}
+	current_time = SDL_GetTicks() - time_on_entry;
+	if (current_time > time)
+	{
+		pb->light = false;
+		timer = true;
+	}
 }

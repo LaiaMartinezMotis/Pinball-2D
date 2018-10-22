@@ -462,5 +462,17 @@ int ramp_sensor[8] = {
 	85, 299
 };
 
+int right_bumper_coll[6] = {
+	323, 614,
+	284, 709,
+	291, 714
+};
+
+int left_bumper_coll[6] = {
+	120, 612,
+	159, 705,
+	152, 710
+};
+
 #endif // !__CHAIN_LIST_H__
 

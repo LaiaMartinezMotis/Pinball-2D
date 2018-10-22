@@ -22,6 +22,7 @@ public:
 
 private:
 	bool LoadMap();
+	void Timer(PhysBody* pb, int time);
 
 public:
 	p2List<PhysBody*>	circles;
@@ -33,11 +34,10 @@ public:
 	PhysBody*			pb_background;
 	PhysBody*			pb_right_flipper;
 	PhysBody*			pb_left_flipper;
-	PhysBody*           pb_right_slingshot;
-	PhysBody*           pb_left_slingshot;
+	PhysBody*           pb_right_bumper;
+	PhysBody*           pb_left_bumper;
 	PhysBody*			pb_plunger;
 	PhysBody*			pb_ramp_sensor;
-
 	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
