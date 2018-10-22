@@ -148,7 +148,7 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		pb_plunger->GetPosition(x, y);
 		SDL_Rect rect = { 96,83,19,80 };
-		App->renderer->Blit(background_elements, x + 412, y + 650, &rect, 1.0f);
+		App->renderer->Blit(background_elements, x + 412, y + 645, &rect, 1.0f);
 	}
 
 	if (pb_right_bumper != NULL && pb_right_bumper->light == true)
@@ -221,6 +221,7 @@ update_status ModuleSceneIntro::Update()
 		life--;
 		destroy = false;
 	}
+
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
 	return UPDATE_CONTINUE;
@@ -280,7 +281,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->listener = this;
-	life = 2;
+	life = 4;
 
 	//Define Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);

@@ -17,6 +17,7 @@ bool ModuleUI::Start()
 {
 	LOG("Loading UI");
 	score_font = App->fonts->Load("pinball/score_font.png" ,"0123456789", 1);
+	life_font = App->fonts->Load("pinball/life_font.png", "01234", 1);
 	return true;
 }
 
@@ -40,6 +41,11 @@ update_status ModuleUI::Update()
 	sprintf_s(high_score_string, 7, "%1d", high_score);
 
 	App->fonts->BlitText(320, 36, score_font, high_score_string);
+
+	//Print Life
+	sprintf_s(life_string, 4, "%1d", App->scene_intro->life);
+
+	App->fonts->BlitText(394, 362, life_font, life_string);
 
 	if (App->scene_intro->life == 0)
 	{
