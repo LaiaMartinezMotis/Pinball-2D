@@ -62,5 +62,6 @@ public:
 	int current_time = 0;
 
 	bool destroy = false;
+	int life = 0;
 
 };

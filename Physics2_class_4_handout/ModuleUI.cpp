@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleUI.h"
 #include "ModuleTextures.h"
+#include "ModuleSceneIntro.h"
 #include "ModuleFonts.h"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -30,9 +31,26 @@ bool ModuleUI::CleanUp()
 // Update: draw background
 update_status ModuleUI::Update()
 {
-	sprintf_s(score_string, 10, "%1d", score_player);
+	//Print Score
+	sprintf_s(score_string, 7, "%1d", score_player);
 
 	App->fonts->BlitText(180, 10, score_font, score_string);
+
+	//Print High Score
+	sprintf_s(high_score_string, 7, "%1d", high_score);
+
+	App->fonts->BlitText(320, 36, score_font, high_score_string);
+
+	if (App->scene_intro->life == 0)
+	{
+		if (score_player > high_score)
+		{
+			high_score = score_player;
+		}
+		score_player = 0;
+		App->scene_intro->life = 2;
+	}
+
 	return UPDATE_CONTINUE;
 }
 

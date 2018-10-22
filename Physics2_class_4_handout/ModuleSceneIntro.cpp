@@ -218,6 +218,7 @@ update_status ModuleSceneIntro::Update()
 		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
 		pb_ball = (App->physics->CreateCircle(414, 626, 10));
 		pb_ball->listener = this;
+		life--;
 		destroy = false;
 	}
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
@@ -279,6 +280,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->listener = this;
+	life = 2;
 
 	//Define Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 320);
