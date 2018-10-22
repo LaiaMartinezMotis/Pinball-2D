@@ -27,12 +27,8 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
+	p2List<PhysBody*>	pb_bumpers;
 
-	PhysBody*           pb_light_bumper;
-	PhysBody*	        pb_up_bumper;
-	PhysBody*	        pb_middle_bumper_1;
-	PhysBody*	        pb_middle_bumper_2;
-	PhysBody*	        pb_middle_bumper_3;
 	PhysBody*			pb_ball;
 	PhysBody*			pb_background;
 	PhysBody*			pb_right_flipper;
@@ -58,6 +54,8 @@ public:
 	p2Animation arrows_right;
 	p2Animation arrows_down;
 
+	bool timer = true;
+	int time_on_entry = 0;
+	int current_time = 0;
 
-	bool light=false;
 };

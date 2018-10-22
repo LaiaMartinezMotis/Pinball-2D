@@ -158,13 +158,30 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
 	}
 
-	/*if (light = true) {
-		int x, y;
-		pb_light_bumper->GetPosition(x, y);
-		SDL_Rect rect = { 8,233,61,61 };
-		App->renderer->Blit(background_elements, 225,  170, &rect);
-	}*/
-	
+	//Check if light = true, draw collision sprite
+	p2List_item<PhysBody*>* bumper = pb_bumpers.getFirst();
+	while (bumper != NULL)
+	{
+		if (bumper->data->light == true)
+		{
+			int x, y;
+			bumper->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 8,233,61,61 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, bumper->data->GetRotation());
+			if (timer)
+			{
+				time_on_entry = SDL_GetTicks();
+				timer = false;
+			}
+			current_time = SDL_GetTicks() - time_on_entry;
+			if (current_time > 200)
+			{
+				bumper->data->light = false;
+				timer = true;
+			}
+		}
+		bumper = bumper->next;
+	}
 
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
@@ -184,29 +201,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			red_item = red_item->next;
 		}
-		if (bodyB == pb_up_bumper)
-		{
-			App->ui->score_player += 500;
-		}
-		if (bodyB == pb_middle_bumper_1)
-		{
-			App->ui->score_player += 200;
-		}
-		if (bodyB == pb_middle_bumper_2)
-		{
-			App->ui->score_player += 100;
 
+		p2List_item<PhysBody*>* bumper_item = pb_bumpers.getFirst();
+		while (bumper_item != NULL) {
+			if (bodyB == bumper_item->data)
+			{
+				App->ui->score_player += 500;
+				bumper_item->data->light = true;
+			}
+			bumper_item = bumper_item->next;
 		}
-		while
-			(bodyB == pb_middle_bumper_3)
-		{
-			/*light = true;*/
-			App->ui->score_player += 500;
-
-			
-		}
+		
 	}
-	/*light=false;*/
 }
 
 //Load Map
@@ -246,37 +252,24 @@ bool ModuleSceneIntro::LoadMap()
 
 	//Define Bumper Physbodys
 
-	pb_up_bumper = App->physics->CreateChain(0, 0, up_bumper, 42);
-	pb_up_bumper->body->SetType(b2_staticBody);
-	pb_up_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_up_bumper->body->GetFixtureList()->SetFriction(0.2F);
+	pb_ramp_sensor = App->physics->CreateChain(0, 0, ramp_sensor, 8);
+	pb_ramp_sensor->body->SetType(b2_staticBody);
+	pb_ramp_sensor->body->GetFixtureList()->SetRestitution(1.0F);
 
+	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42, 40, 40));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42, 147, 195));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44, 225, 165));
+	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_3, 44, 181, 267));
 
-
-	pb_middle_bumper_1 = App->physics->CreateChain(0, 0, middle_bumper_1, 42);
-	pb_middle_bumper_1->body->SetType(b2_staticBody);
-	pb_middle_bumper_1->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_middle_bumper_1->body->GetFixtureList()->SetFriction(0.2F);
-
-
-	pb_middle_bumper_2 = App->physics->CreateChain(0, 0, middle_bumper_2, 44);
-	pb_middle_bumper_2->body->SetType(b2_staticBody);
-	pb_middle_bumper_2->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_middle_bumper_2->body->GetFixtureList()->SetFriction(0.2F);
-
-
-	pb_middle_bumper_3 = App->physics->CreateChain(0, 0, middle_bumper_3, 44);
-	pb_middle_bumper_3->body->SetType(b2_staticBody);
-	pb_middle_bumper_3->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_middle_bumper_3->body->GetFixtureList()->SetFriction(0.2F);
-
-
-		//pb_light_bumper = App->physics->CreateChain(215, -60, bump_light, 50);
-		//pb_light_bumper->body->SetType(b2_staticBody);
-		//pb_light_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-		//pb_light_bumper->body->GetFixtureList()->SetFriction(0.2F);
+	p2List_item<PhysBody*>* bump_elem = pb_bumpers.getFirst();
+	while (bump_elem != NULL)
+	{
+		bump_elem->data->body->SetType(b2_staticBody);
+		bump_elem->data->body->GetFixtureList()->SetRestitution(1.0F);
+		bump_elem->data->body->GetFixtureList()->SetFriction(0.2F);
+		bump_elem = bump_elem->next;
+	}
 	
-
 	//Define Sensors
 	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 570, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 455, 30, 15));

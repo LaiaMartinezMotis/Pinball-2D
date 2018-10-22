@@ -20,12 +20,14 @@ public:
 	{}
 
 	void GetPosition(int& x, int &y) const;
+	void GetRealPosition(int& x, int &y) const;
 	float GetRotation() const;
 	bool Contains(int x, int y) const;
 	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 
 public:
 	int width, height;
+	bool light;
 	b2Body* body;
 	Module* listener;
 };
@@ -45,7 +47,7 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, int* points, int size);
+	PhysBody* CreateChain(int x, int y, int* points, int size, int width = 0, int height = 0);
 	PhysBody* CreateChainSensor(int x, int y, int* points, int size);
 
 	// b2ContactListener ---

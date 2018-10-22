@@ -133,7 +133,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
+PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, int width, int height)
 {
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
@@ -162,7 +162,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	b->SetUserData(pbody);
-	pbody->width = pbody->height = 0;
+	pbody->width = width;
+	pbody->height = height;
 
 	return pbody;
 }
@@ -339,6 +340,13 @@ void PhysBody::GetPosition(int& x, int &y) const
 	b2Vec2 pos = body->GetPosition();
 	x = METERS_TO_PIXELS(pos.x) - (width);
 	y = METERS_TO_PIXELS(pos.y) - (height);
+}
+
+void PhysBody::GetRealPosition(int& x, int &y) const
+{
+	b2Vec2 pos = body->GetPosition();
+	x = METERS_TO_PIXELS(pos.x) + (width);
+	y = METERS_TO_PIXELS(pos.y) + (height);
 }
 
 float PhysBody::GetRotation() const
