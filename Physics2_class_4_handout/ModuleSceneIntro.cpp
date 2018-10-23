@@ -235,6 +235,34 @@ update_status ModuleSceneIntro::Update()
 		little_bumper = little_bumper->next;
 	}
 
+	p2List_item<PhysBody*>* pink_light = pb_pink_lights.getFirst();
+	while (pink_light != NULL)
+	{
+		if (pink_light->data->light == true)
+		{
+			int x, y;
+			pink_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 91,236,23,22 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, pink_light->data->GetRotation());
+			/*Timer(pink_light->data, 200);*/
+		}
+		pink_light = pink_light->next;
+	}
+
+	p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
+	while (pink_light != NULL)
+	{
+		if (pink_light->data->light == true)
+		{
+			int x, y;
+			point_light->data->GetPosition(x, y);
+			SDL_Rect rect = { 91,236,23,22 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
+			/*Timer(pink_light->data, 200);*/
+		}
+		point_light = point_light->next;
+	}
+
 	if (destroy)
 	{
 		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
@@ -275,6 +303,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			bumper_item = bumper_item->next;
 		}
+
 		p2List_item<PhysBody*>* arrow_item = pb_arrow_lights.getFirst();
 		while (arrow_item != NULL) {
 			if (bodyB == arrow_item->data)
@@ -284,6 +313,28 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				arrow_item->data->light = true;
 			}
 			arrow_item = arrow_item->next;
+		}
+
+		p2List_item<PhysBody*>* pink_item = pb_pink_lights.getFirst();
+		while (pink_item != NULL) {
+			if (bodyB == pink_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				pink_item->data->light = true;
+			}
+			pink_item = pink_item->next;
+		}
+
+		p2List_item<PhysBody*>* point_item = pb_point_lights.getFirst();
+		while (pink_item != NULL) {
+			if (bodyB == point_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				point_item->data->light = true;
+			}
+			point_item = point_item->next;
 		}
 		
 		p2List_item<PhysBody*>* little_bumper_item = pb_little_bumpers.getFirst();
@@ -429,14 +480,19 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(405, 150, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10));
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10));
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10));
+
+	pb_point_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10));
+	pb_point_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10));
+	pb_point_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10));
+
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
-	
-
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(309, 366, 15, 36));
-	
-
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(370, 546, 15, 39));
 	
+
 
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
 	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);
