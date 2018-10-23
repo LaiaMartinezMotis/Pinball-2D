@@ -28,6 +28,7 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
+	p2List<PhysBody*>	pb_arrow_lights;
 	p2List<PhysBody*>	pb_bumpers;
 	p2List<PhysBody*>	pb_little_bumpers;
 
@@ -56,6 +57,12 @@ public:
 	SDL_Texture* upper_scenario = nullptr;
 	SDL_Texture* background_elements = nullptr;
 	uint bonus_fx;
+	uint lv2_fx;
+	uint bumper_fx;
+	uint littlebumper_fx;
+	uint lights_fx;
+	uint death_fx;
+	uint arrows_fx;
 
 	p2Animation arrows_left;
 	p2Animation arrows_right;

@@ -47,7 +47,15 @@ bool ModuleSceneIntro::Start()
 	upper_scenario = App->textures->Load("pinball/upper_scenario.png");
 	ball = App->textures->Load("pinball/ball.png");
 	background_elements = App->textures->Load("pinball/background_elements.png");
+
+
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	lv2_fx = App->audio->LoadFx("pinball/lv2.wav");
+	bumper_fx = App->audio->LoadFx("pinball/bumper_fx.wav");
+	littlebumper_fx=App->audio->LoadFx("pinball/littlebump_fx.wav");
+	lights_fx = App->audio->LoadFx("pinball/lights_fx.wav");
+	death_fx = App->audio->LoadFx("pinball/death_fx.wav");
+	arrows_fx = App->audio->LoadFx("pinball/redarrows_fx.wav");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -73,7 +81,7 @@ update_status ModuleSceneIntro::PreUpdate()
 		pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-
+		
 		pb_right_flipper->body->ApplyAngularImpulse(2.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
@@ -251,6 +259,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (red_item != NULL) {
 			if (bodyB == red_item->data)
 			{
+				/*App->audio->PlayFx(lights_fx);*/
 				App->ui->score_player += 200;
 			}
 			red_item = red_item->next;
@@ -260,16 +269,28 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (bumper_item != NULL) {
 			if (bodyB == bumper_item->data)
 			{
+				/*App->audio->PlayFx(bumper_fx);*/
 				App->ui->score_player += 500;
 				bumper_item->data->light = true;
 			}
 			bumper_item = bumper_item->next;
 		}
-
+		p2List_item<PhysBody*>* arrow_item = pb_arrow_lights.getFirst();
+		while (arrow_item != NULL) {
+			if (bodyB == arrow_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+				
+				arrow_item->data->light = true;
+			}
+			arrow_item = arrow_item->next;
+		}
+		
 		p2List_item<PhysBody*>* little_bumper_item = pb_little_bumpers.getFirst();
 		while (little_bumper_item != NULL) {
 			if (bodyB == little_bumper_item->data)
 			{
+				/*App->audio->PlayFx(littlebumper_fx);*/
 				App->ui->score_player += 500;
 				little_bumper_item->data->light = true;
 			}
@@ -278,10 +299,12 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (bodyB == pb_left_bumper)
 		{
+			/*App->audio->PlayFx(bonus_fx);*/
 			pb_left_bumper->light = true;
 		}
 		if (bodyB == pb_right_bumper)
 		{
+			/*App->audio->PlayFx(bonus_fx);*/
 			pb_right_bumper->light = true;
 		}
 		if (bodyB == pb_launch_ramp)
@@ -300,6 +323,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		//Death
 		if (bodyB == pb_death_sensor)
 		{
+			/*App->audio->PlayFx(death_fx);*/
 			destroy = true;
 		}
 	}
@@ -313,6 +337,8 @@ bool ModuleSceneIntro::LoadMap()
 	pb_ball->body->SetBullet(true);
 	pb_ball->listener = this;
 	life = 4;
+
+	//Sensor light
 
 	//Define Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 318);
@@ -402,6 +428,15 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(420, 230, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(405, 150, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
+
+	pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
+	
+
+	pb_arrow_lights.add(App->physics->CreateRectangleSensor(309, 366, 15, 36));
+	
+
+	pb_arrow_lights.add(App->physics->CreateRectangleSensor(370, 546, 15, 39));
+	
 
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
 	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);
