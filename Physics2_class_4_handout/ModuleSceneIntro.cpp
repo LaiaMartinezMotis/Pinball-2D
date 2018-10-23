@@ -199,13 +199,6 @@ update_status ModuleSceneIntro::Update()
 		Timer(pb_ramp, 200);
 	}
 
-	if (pb_ball != NULL)
-	{
-		int x, y;
-		pb_ball->GetPosition(x, y);
-		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
-	}
-
 	//Check if light = true, draw collision sprite
 	p2List_item<PhysBody*>* bumper = pb_bumpers.getFirst();
 	while (bumper != NULL)
@@ -238,29 +231,36 @@ update_status ModuleSceneIntro::Update()
 	p2List_item<PhysBody*>* pink_light = pb_pink_lights.getFirst();
 	while (pink_light != NULL)
 	{
-		if (pink_light->data->light == true)
+		if (pink_light->data->light == true) 
 		{
 			int x, y;
 			pink_light->data->GetRealPosition(x, y);
 			SDL_Rect rect = { 91,236,23,22 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, pink_light->data->GetRotation());
-			/*Timer(pink_light->data, 200);*/
 		}
+		
 		pink_light = pink_light->next;
 	}
 
-	p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
-	while (pink_light != NULL)
+	//p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
+	//while (point_light != NULL)
+	//{
+	//	
+	//		int x, y;
+	//		point_light->data->GetRealPosition(x, y);
+	//		SDL_Rect rect = { 91,236,23,22 };
+	//		App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
+	//		/*Timer(pink_light->data, 200);*/
+	//	
+	//	point_light = point_light->next;
+	//}
+
+	//Print Ball
+	if (pb_ball != NULL)
 	{
-		if (pink_light->data->light == true)
-		{
-			int x, y;
-			point_light->data->GetPosition(x, y);
-			SDL_Rect rect = { 91,236,23,22 };
-			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
-			/*Timer(pink_light->data, 200);*/
-		}
-		point_light = point_light->next;
+		int x, y;
+		pb_ball->GetPosition(x, y);
+		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
 	}
 
 	if (destroy)
@@ -327,7 +327,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		}
 
 		p2List_item<PhysBody*>* point_item = pb_point_lights.getFirst();
-		while (pink_item != NULL) {
+		while (point_item != NULL) {
 			if (bodyB == point_item->data)
 			{
 				/*App->audio->PlayFx(arrows_fx);*/
@@ -480,7 +480,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(405, 150, 30, 15));
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
-	pb_pink_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10));
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10, -20, -4));
 	pb_pink_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10));
 	pb_pink_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10));
 
