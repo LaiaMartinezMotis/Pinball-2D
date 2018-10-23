@@ -102,7 +102,7 @@ update_status ModuleSceneIntro::Update()
 	//Print background layer
 	App->renderer->Blit(scenario, 0, 0, NULL, 1.0f);
 	App->renderer->Blit(background_elements, 174, 435, &arrows_left.GetCurrentFrame(), 1.0F);
-	App->renderer->Blit(background_elements, 309, 366, &arrows_right.GetCurrentFrame(), 1.0F);
+	App->renderer->Blit(background_elements, 305, 368, &arrows_right.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 370, 546, &arrows_down.GetCurrentFrame(), 1.0F);
 
 
@@ -133,22 +133,6 @@ update_status ModuleSceneIntro::Update()
 		c->data->GetPosition(x, y);
 		App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
 		c = c->next;
-	}
-
-	if (pb_right_flipper != NULL)
-	{
-		int x, y;
-		pb_right_flipper->GetPosition(x, y);
-		SDL_Rect rect = { 0,45,69,36 };
-		App->renderer->Blit(background_elements, 235, 740, &rect, 1.0f, pb_right_flipper->GetRotation() + 20, 65, 10);
-	}
-
-	if (pb_left_flipper != NULL)
-	{
-		int x, y;
-		pb_left_flipper->GetPosition(x, y);
-		SDL_Rect rect = { 0,0,68,36 };
-		App->renderer->Blit(background_elements, 150, 740, &rect, 1.0f, pb_left_flipper->GetRotation() - 20, 10, 10);
 	}
 
 	if (pb_plunger != NULL)
@@ -254,6 +238,23 @@ update_status ModuleSceneIntro::Update()
 	//	
 	//	point_light = point_light->next;
 	//}
+
+	//Print Flipper
+	if (pb_right_flipper != NULL)
+	{
+		int x, y;
+		pb_right_flipper->GetPosition(x, y);
+		SDL_Rect rect = { 0,45,69,36 };
+		App->renderer->Blit(background_elements, 235, 740, &rect, 1.0f, pb_right_flipper->GetRotation() + 20, 65, 10);
+	}
+
+	if (pb_left_flipper != NULL)
+	{
+		int x, y;
+		pb_left_flipper->GetPosition(x, y);
+		SDL_Rect rect = { 0,0,68,36 };
+		App->renderer->Blit(background_elements, 150, 740, &rect, 1.0f, pb_left_flipper->GetRotation() - 20, 10, 10);
+	}
 
 	//Print Ball
 	if (pb_ball != NULL)
@@ -386,6 +387,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->body->SetBullet(true);
+	pb_ball->body->GetFixtureList()->SetFriction(0.4F);
 	pb_ball->listener = this;
 	life = 4;
 
@@ -395,7 +397,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 318);
 	pb_background->body->SetType(b2_staticBody);
 
-	pb_purple_ramp = App->physics->CreateChain(0, 0, purple_ramp, 62);
+	pb_purple_ramp = App->physics->CreateChain(0, 0, purple_ramp, 72);
 	pb_purple_ramp->body->SetType(b2_staticBody);
 
 	pb_right_flipper = App->physics->CreateRectangle(270, 746, 62, 13);
