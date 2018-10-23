@@ -226,19 +226,47 @@ update_status ModuleSceneIntro::Update()
 		pink_light = pink_light->next;
 	}
 
-	//p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
-	//while (point_light != NULL)
-	//{
-	//	
-	//		int x, y;
-	//		point_light->data->GetRealPosition(x, y);
-	//		SDL_Rect rect = { 91,236,23,22 };
-	//		App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
-	//		/*Timer(pink_light->data, 200);*/
-	//	
-	//	point_light = point_light->next;
-	//}
+	p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
+	while (point_light != NULL)
+	{
+		if (point_light->data->light == true)
+		{
+			int x, y;
+			point_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 21,334,28,30 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
+			/*Timer(pink_light->data, 200);*/
+		}
+		point_light = point_light->next;
+	}
 
+	p2List_item<PhysBody*>* yellow_light = pb_yellow_lights.getFirst();
+	while (yellow_light != NULL)
+	{
+		if (yellow_light->data->light == true)
+		{
+			int x, y;
+			yellow_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 40,312,17,19 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, yellow_light->data->GetRotation());
+			/*Timer(pink_light->data, 200);*/
+		}
+		yellow_light = yellow_light->next;
+	}
+
+	p2List_item<PhysBody*>* green_light = pb_green_lights.getFirst();
+	while (green_light != NULL)
+	{
+		if (green_light->data->light == true)
+		{
+			int x, y;
+			green_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 21,311,17,20 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, green_light->data->GetRotation());
+		}
+
+		green_light = green_light->next;
+	}
 	//Print Flipper
 	if (pb_right_flipper != NULL)
 	{
@@ -334,6 +362,28 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				pink_item->data->light = true;
 			}
 			pink_item = pink_item->next;
+		}
+
+		p2List_item<PhysBody*>* yellow_item = pb_yellow_lights.getFirst();
+		while (yellow_item != NULL) {
+			if (bodyB == yellow_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				yellow_item->data->light = true;
+			}
+			yellow_item = yellow_item->next;
+		}
+
+		p2List_item<PhysBody*>* green_item = pb_green_lights.getFirst();
+		while (green_item != NULL) {
+			if (bodyB == green_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				green_item->data->light = true;
+			}
+			green_item = green_item->next;
 		}
 
 		p2List_item<PhysBody*>* point_item = pb_point_lights.getFirst();
@@ -496,12 +546,20 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
 	pb_pink_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10, -20, -4));
-	pb_pink_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10));
-	pb_pink_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10));
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10, -20, -4));
+	pb_pink_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10, -20, -4));
 
-	pb_point_lights.add(App->physics->CreateRectangleSensor(314, 170, 5, 10));
-	pb_point_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10));
-	pb_point_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(122, 174, 5, 10, 1, -3));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(147, 160, 5, 10, -3, -4));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(167, 150, 5, 10, -3, -4));
+
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(67, 226, 5, 10, 2, -10));
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(68, 253, 5, 10, 2, -12));
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(70, 275, 5, 10, 2, -11));
+
+	pb_point_lights.add(App->physics->CreateRectangleSensor(192, 90, 8, 8, -11, -16));
+	pb_point_lights.add(App->physics->CreateRectangleSensor(225, 90, 8, 8, -11, -16));
+	pb_point_lights.add(App->physics->CreateRectangleSensor(258, 90, 8, 8, -11, -16));
 
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(309, 366, 15, 36));

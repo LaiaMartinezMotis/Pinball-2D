@@ -28,6 +28,8 @@ public:
 	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
+	p2List<PhysBody*>   pb_green_lights;
+	p2List<PhysBody*>   pb_yellow_lights;
 	p2List<PhysBody*>   pb_pink_lights;
 	p2List<PhysBody*>   pb_point_lights;
 	p2List<PhysBody*>	pb_arrow_lights;
