@@ -43,6 +43,8 @@ public:
 	PhysBody*			pb_purple_ramp;
 
 	PhysBody*			pb_death_sensor;
+	PhysBody*			pb_left_push;
+	PhysBody*			pb_right_push;
 	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;

@@ -292,6 +292,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			pb_ramp->light = true;
 		}
+		if (bodyB == pb_right_push || bodyB == pb_left_push)
+		{
+			bodyA->body->ApplyLinearImpulse({0.0f,-2.0F}, bodyA->body->GetLocalCenter(), true);
+		}
 		
 		//Death
 		if (bodyB == pb_death_sensor)
@@ -306,6 +310,7 @@ bool ModuleSceneIntro::LoadMap()
 {
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
+	pb_ball->body->SetBullet(true);
 	pb_ball->listener = this;
 	life = 4;
 
@@ -399,6 +404,8 @@ bool ModuleSceneIntro::LoadMap()
 	pb_red_lights.add(App->physics->CreateRectangleSensor(350, 95, 15, 40));
 
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
+	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);
+	pb_right_push = App->physics->CreateRectangleSensor(384,772,16,16);
 
 	//Define Joints
 	//Revolute Joint
