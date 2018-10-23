@@ -272,6 +272,15 @@ update_status ModuleSceneIntro::Update()
 		life--;
 		destroy = false;
 	}
+	if (teleport)
+	{
+		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
+		pb_ball = (App->physics->CreateCircle(109, 81, 10));
+		float random_num = (rand() % 20) + 40;
+		pb_ball->body->ApplyForceToCenter({ 0.0F, -random_num }, true);
+		pb_ball->listener = this;
+		teleport = false;
+	}
 
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
 
@@ -370,6 +379,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyB == pb_right_push || bodyB == pb_left_push)
 		{
 			bodyA->body->ApplyLinearImpulse({0.0f,-2.0F}, bodyA->body->GetLocalCenter(), true);
+		}
+		if (bodyB == pb_wormhole_entry)
+		{
+			teleport = true;
 		}
 		
 		//Death
@@ -499,6 +512,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
 	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);
 	pb_right_push = App->physics->CreateRectangleSensor(384,772,16,16);
+	pb_wormhole_entry = App->physics->CreateRectangleSensor(348, 510, 20, 20);
 
 	//Define Joints
 	//Revolute Joint

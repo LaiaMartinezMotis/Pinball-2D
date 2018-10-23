@@ -48,6 +48,7 @@ public:
 	PhysBody*			pb_death_sensor;
 	PhysBody*			pb_left_push;
 	PhysBody*			pb_right_push;
+	PhysBody*			pb_wormhole_entry;
 	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
@@ -75,6 +76,7 @@ public:
 	int current_time = 0;
 
 	bool destroy = false;
+	bool teleport = false;
 	int life = 0;
 
 };
