@@ -222,7 +222,6 @@ update_status ModuleSceneIntro::Update()
 			SDL_Rect rect = { 91,236,23,22 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, pink_light->data->GetRotation());
 		}
-		
 		pink_light = pink_light->next;
 	}
 
@@ -300,6 +299,7 @@ update_status ModuleSceneIntro::Update()
 		life--;
 		destroy = false;
 	}
+
 	if (teleport)
 	{
 		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
@@ -308,6 +308,16 @@ update_status ModuleSceneIntro::Update()
 		pb_ball->body->ApplyForceToCenter({ 0.0F, -random_num }, true);
 		pb_ball->listener = this;
 		teleport = false;
+	}
+
+	//Check if 3 lights lighted
+	p2List_item<PhysBody*>* pink_light_middle = pb_pink_lights.getFirst()->next;
+	if (pink_light_middle !=NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
+	{
+		pink_light_middle->next->data->light = false;
+		pink_light_middle->data->light = false;
+		pink_light_middle->prev->data->light = false;
+		App->ui->score_player += 15000;
 	}
 
 	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
@@ -468,13 +478,13 @@ bool ModuleSceneIntro::LoadMap()
 
 	pb_right_bumper = App->physics->CreateChain(0, 0, right_bumper_coll, 6, 277, 606);
 	pb_right_bumper->body->SetType(b2_staticBody);
-	pb_right_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_right_bumper->body->GetFixtureList()->SetFriction(0.4F);
+	pb_right_bumper->body->GetFixtureList()->SetRestitution(1.2F);
+	pb_right_bumper->body->GetFixtureList()->SetFriction(0.5F);
 
 	pb_left_bumper = App->physics->CreateChain(0, 0, left_bumper_coll, 6, 105, 605);
 	pb_left_bumper->body->SetType(b2_staticBody);
-	pb_left_bumper->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_left_bumper->body->GetFixtureList()->SetFriction(0.4F);
+	pb_left_bumper->body->GetFixtureList()->SetRestitution(1.2F);
+	pb_left_bumper->body->GetFixtureList()->SetFriction(0.3F);
 
 	pb_plunger = App->physics->CreateChain(0, 0, plunger, 10);
 
