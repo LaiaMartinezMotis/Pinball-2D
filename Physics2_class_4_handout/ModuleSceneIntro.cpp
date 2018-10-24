@@ -258,6 +258,33 @@ update_status ModuleSceneIntro::Update()
 		}
 		pink_light = pink_light->next;
 	}
+	
+    p2List_item<PhysBody*>* ovalred_light = pb_ovalred_lights.getFirst();
+	while (ovalred_light != NULL)
+	{
+		if (ovalred_light->data->light == true)
+		{
+			int x, y;
+			ovalred_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 5,303,14,28 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, ovalred_light->data->GetRotation());
+		}
+		ovalred_light = ovalred_light->next;
+	}
+
+	p2List_item<PhysBody*>* ovalblue_light = pb_ovalblue_lights.getFirst();
+	while (ovalblue_light != NULL)
+	{
+		if (ovalblue_light->data->light == true)
+		{
+			int x, y;
+			ovalblue_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 8,334,8,22 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, ovalblue_light->data->GetRotation());
+		}
+
+		ovalblue_light = ovalblue_light->next;
+	}
 
 	p2List_item<PhysBody*>* point_light = pb_point_lights.getFirst();
 	while (point_light != NULL)
@@ -273,6 +300,20 @@ update_status ModuleSceneIntro::Update()
 		point_light = point_light->next;
 	}
 
+	p2List_item<PhysBody*>* pointgreen_light = pb_pointgreen_lights.getFirst();
+	while (pointgreen_light != NULL)
+	{
+		if (pointgreen_light->data->light == true)
+		{
+			int x, y;
+			pointgreen_light->data->GetRealPosition(x, y);
+			SDL_Rect rect = { 26,296,12,12 };
+			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, pointgreen_light->data->GetRotation());
+			/*Timer(pink_light->data, 200);*/
+		}
+		pointgreen_light = pointgreen_light->next;
+	}
+
 	p2List_item<PhysBody*>* yellow_light = pb_yellow_lights.getFirst();
 	while (yellow_light != NULL)
 	{
@@ -280,7 +321,7 @@ update_status ModuleSceneIntro::Update()
 		{
 			int x, y;
 			yellow_light->data->GetRealPosition(x, y);
-			SDL_Rect rect = { 40,312,17,19 };
+			SDL_Rect rect = { 40,310,18,21 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, yellow_light->data->GetRotation());
 			/*Timer(pink_light->data, 200);*/
 		}
@@ -355,8 +396,62 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	//Check if 3 lights lighted
-	p2List_item<PhysBody*>* pink_light_middle = pb_pink_lights.getFirst()->next;
-	if (pink_light_middle !=NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
+	p2List_item<PhysBody*>* ovalred_light_middle = pb_ovalred_lights.getFirst()->next;
+	if (ovalred_light_middle !=NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true)
+	{
+		ovalred_light_middle->next->data->light = false;
+		ovalred_light_middle->data->light = false;
+		ovalred_light_middle->prev->data->light = false;
+		App->ui->score_player += 5000;
+	}
+
+	p2List_item<PhysBody*>* ovalblue_light_middle = pb_ovalblue_lights.getFirst()->next;
+	if (ovalblue_light_middle != NULL && ovalblue_light_middle->prev->data->light == true && ovalblue_light_middle->data->light == true && ovalblue_light_middle->next->data->light == true)
+	{
+		ovalblue_light_middle->next->data->light = false;
+		ovalblue_light_middle->data->light = false;
+		ovalblue_light_middle->prev->data->light = false;
+		App->ui->score_player += 5000;
+	}
+
+	p2List_item<PhysBody*>* pointgreen_light_middle = pb_pointgreen_lights.getFirst()->next;
+	if (pointgreen_light_middle != NULL && pointgreen_light_middle->prev->data->light == true && pointgreen_light_middle->data->light == true && pointgreen_light_middle->next->data->light == true)
+	{
+		pointgreen_light_middle->next->data->light = false;
+		pointgreen_light_middle->data->light = false;
+		pointgreen_light_middle->prev->data->light = false;
+		App->ui->score_player += 20000;
+	}
+
+	p2List_item<PhysBody*>* yellow_light_middle = pb_yellow_lights.getFirst()->next;
+	if (yellow_light_middle != NULL && yellow_light_middle->prev->data->light == true && yellow_light_middle->data->light == true && yellow_light_middle->next->data->light == true)
+	{
+		yellow_light_middle->next->data->light = false;
+		yellow_light_middle->data->light = false;
+		yellow_light_middle->prev->data->light = false;
+		App->ui->score_player += 15000;
+	}
+
+	p2List_item<PhysBody*>* point_light_middle = pb_point_lights.getFirst()->next;
+	if (point_light_middle != NULL && point_light_middle->prev->data->light == true && point_light_middle->data->light == true && point_light_middle->next->data->light == true)
+	{
+		point_light_middle->next->data->light = false;
+		point_light_middle->data->light = false;
+		point_light_middle->prev->data->light = false;
+		App->ui->score_player += 15000;
+	}
+
+	p2List_item<PhysBody*>* green_light_middle = pb_green_lights.getFirst()->next;
+	if (green_light_middle != NULL && green_light_middle->prev->data->light == true && green_light_middle->data->light == true && green_light_middle->next->data->light == true)
+	{
+		green_light_middle->next->data->light = false;
+		green_light_middle->data->light = false;
+		green_light_middle->prev->data->light = false;
+		App->ui->score_player += 15000;
+	}
+
+	p2List_item<PhysBody*>* pink_light_middle = pb_ovalred_lights.getFirst()->next;
+	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
 	{
 		pink_light_middle->next->data->light = false;
 		pink_light_middle->data->light = false;
@@ -449,6 +544,39 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				point_item->data->light = true;
 			}
 			point_item = point_item->next;
+		}
+		
+		p2List_item<PhysBody*>* ovalred_item = pb_ovalred_lights.getFirst();
+		while (ovalred_item != NULL) {
+			if (bodyB == ovalred_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				ovalred_item->data->light = true;
+			}
+			ovalred_item = ovalred_item->next;
+		}
+
+		p2List_item<PhysBody*>* pointgreen_item = pb_pointgreen_lights.getFirst();
+		while (pointgreen_item != NULL) {
+			if (bodyB == pointgreen_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				pointgreen_item->data->light = true;
+			}
+			pointgreen_item = pointgreen_item->next;
+		}
+
+		p2List_item<PhysBody*>* ovalblue_item = pb_ovalblue_lights.getFirst();
+		while (ovalblue_item != NULL) {
+			if (bodyB == ovalblue_item->data)
+			{
+				/*App->audio->PlayFx(arrows_fx);*/
+
+				ovalblue_item->data->light = true;
+			}
+			ovalblue_item = ovalblue_item->next;
 		}
 		
 		p2List_item<PhysBody*>* little_bumper_item = pb_little_bumpers.getFirst();
@@ -633,13 +761,25 @@ bool ModuleSceneIntro::LoadMap()
 	pb_pink_lights.add(App->physics->CreateRectangleSensor(328, 190, 5, 10, -20, -4));
 	pb_pink_lights.add(App->physics->CreateRectangleSensor(334, 212, 5, 10, -20, -4));
 
-	pb_green_lights.add(App->physics->CreateRectangleSensor(122, 174, 5, 10, 1, -3));
-	pb_green_lights.add(App->physics->CreateRectangleSensor(147, 160, 5, 10, -3, -4));
-	pb_green_lights.add(App->physics->CreateRectangleSensor(167, 150, 5, 10, -3, -4));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(122, 174, 5, 10, -1, -1));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(147, 160, 5, 10, -3, 1));
+	pb_green_lights.add(App->physics->CreateRectangleSensor(167, 150, 5, 10, -5, -3));
 
-	pb_yellow_lights.add(App->physics->CreateRectangleSensor(67, 226, 5, 10, 2, -10));
-	pb_yellow_lights.add(App->physics->CreateRectangleSensor(68, 253, 5, 10, 2, -12));
-	pb_yellow_lights.add(App->physics->CreateRectangleSensor(70, 275, 5, 10, 2, -11));
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(67, 226, 5, 10, 3, -12));
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(68, 253, 5, 10, 3, -13));
+	pb_yellow_lights.add(App->physics->CreateRectangleSensor(70, 275, 5, 10, 4, -11));
+
+	pb_ovalred_lights.add(App->physics->CreateRectangleSensor(325, 432, 5, 10, 4, -15));
+	pb_ovalred_lights.add(App->physics->CreateRectangleSensor(325, 459, 5, 10, 4, -15));
+	pb_ovalred_lights.add(App->physics->CreateRectangleSensor(326, 487, 5, 10, 4, -15));
+	
+	pb_pointgreen_lights.add(App->physics->CreateRectangleSensor(19, 404, 6, 6, -6, -5));
+	pb_pointgreen_lights.add(App->physics->CreateRectangleSensor(48, 416, 6, 6, -6, -5));
+	pb_pointgreen_lights.add(App->physics->CreateRectangleSensor(79, 426, 6, 6, -6, -5));
+
+	pb_ovalblue_lights.add(App->physics->CreateRectangleSensor(108, 478, 5, 10, 7, -8));
+	pb_ovalblue_lights.add(App->physics->CreateRectangleSensor(108, 509, 5, 10, 7, -13));
+	pb_ovalblue_lights.add(App->physics->CreateRectangleSensor(108, 530, 5, 10, 7, -10));
 
 	pb_point_lights.add(App->physics->CreateRectangleSensor(192, 90, 8, 8, -11, -16));
 	pb_point_lights.add(App->physics->CreateRectangleSensor(225, 90, 8, 8, -11, -16));
