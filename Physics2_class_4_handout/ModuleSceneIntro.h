@@ -22,7 +22,8 @@ public:
 
 private:
 	bool LoadMap();
-	void Timer(PhysBody* pb, int time);
+	//The type means the parameter we want to change, if 0 is light, if 1 is active
+	void Timer(PhysBody* pb, int time, bool value = false, int type = 0);
 
 public:
 	p2List<PhysBody*>	circles;
@@ -46,11 +47,16 @@ public:
 	PhysBody*			pb_launch_ramp;
 	PhysBody*			pb_ramp;
 	PhysBody*			pb_purple_ramp;
+	PhysBody*			pb_border;
 
 	PhysBody*			pb_death_sensor;
 	PhysBody*			pb_left_push;
 	PhysBody*			pb_right_push;
 	PhysBody*			pb_wormhole_entry;
+	PhysBody*			pb_ramp_sensor;
+	PhysBody*			pb_ramp_leave;
+	PhysBody*			pb_ramp_blue;
+	PhysBody*			pb_ramp_red;
 	
 	b2RevoluteJoint*    right_joint;
 	b2RevoluteJoint*    left_joint;
@@ -79,6 +85,9 @@ public:
 
 	bool destroy = false;
 	bool teleport = false;
+	bool block = false;
+	bool ramp_red = false;
+	bool ramp_blue = false;
 	int life = 0;
 
 };

@@ -48,7 +48,6 @@ bool ModuleSceneIntro::Start()
 	ball = App->textures->Load("pinball/ball.png");
 	background_elements = App->textures->Load("pinball/background_elements.png");
 
-
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	lv2_fx = App->audio->LoadFx("pinball/lv2.wav");
 	bumper_fx = App->audio->LoadFx("pinball/bumper_fx.wav");
@@ -183,6 +182,41 @@ update_status ModuleSceneIntro::Update()
 		Timer(pb_ramp, 200);
 	}
 
+	if (pb_ramp_red->body->IsActive())
+	{
+		int x, y;
+		pb_ramp_red->GetRealPosition(x, y);
+		SDL_Rect rect = { 30,198,24,18 };
+		App->renderer->Blit(background_elements, x, y, &rect);
+	}
+
+	if (pb_ramp_blue->body->IsActive())
+	{
+		int x, y;
+		pb_ramp_blue->GetRealPosition(x, y);
+		SDL_Rect rect = { 5,197,18,19 };
+		App->renderer->Blit(background_elements, x, y, &rect);
+	}
+
+	if (ramp_red)
+	{
+		Timer(pb_ramp_red, 1000, true, 1);
+	}
+	else
+	{
+		Timer(pb_ramp_red, 1000, false, 1);
+	}
+
+	if (ramp_blue)
+	{
+		Timer(pb_ramp_blue, 1000, true, 1);
+	}
+	else
+	{
+		Timer(pb_ramp_blue, 1000, false, 1);
+	}
+
+
 	//Check if light = true, draw collision sprite
 	p2List_item<PhysBody*>* bumper = pb_bumpers.getFirst();
 	while (bumper != NULL)
@@ -266,6 +300,7 @@ update_status ModuleSceneIntro::Update()
 
 		green_light = green_light->next;
 	}
+
 	//Print Flipper
 	if (pb_right_flipper != NULL)
 	{
@@ -308,6 +343,15 @@ update_status ModuleSceneIntro::Update()
 		pb_ball->body->ApplyForceToCenter({ 0.0F, -random_num }, true);
 		pb_ball->listener = this;
 		teleport = false;
+	}
+
+	if (block)
+	{
+		pb_border->body->SetActive(true);
+	}
+	else
+	{
+		pb_border->body->SetActive(false);
 	}
 
 	//Check if 3 lights lighted
@@ -436,13 +480,31 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			pb_ramp->light = true;
 		}
-		if (bodyB == pb_right_push || bodyB == pb_left_push)
+		if (bodyB == pb_right_push)
 		{
-			bodyA->body->ApplyLinearImpulse({0.0f,-2.0F}, bodyA->body->GetLocalCenter(), true);
+			bodyA->body->ApplyLinearImpulse({ 0.0f,-2.0F }, bodyA->body->GetLocalCenter(), true);
+			ramp_red = true;
+		}
+		if (bodyB == pb_left_push)
+		{
+			bodyA->body->ApplyLinearImpulse({ 0.0f,-2.0F }, bodyA->body->GetLocalCenter(), true);
+			ramp_blue = true;
 		}
 		if (bodyB == pb_wormhole_entry)
 		{
 			teleport = true;
+		}
+		if (bodyB == pb_ramp_sensor)
+		{
+			block = true;
+		}
+		if (bodyB == pb_ramp_leave)
+		{
+			block = false;
+		}
+		if (bodyB == pb_border)
+		{
+			bodyA->body->ApplyLinearImpulse({ 0.5F, 0.5F }, bodyA->body->GetLocalCenter(), true);
 		}
 		
 		//Death
@@ -450,6 +512,9 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			/*App->audio->PlayFx(death_fx);*/
 			destroy = true;
+			ramp_blue = false;
+			ramp_red = false;
+			
 		}
 	}
 }
@@ -464,9 +529,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_ball->listener = this;
 	life = 4;
 
-	//Sensor light
-
-	//Define Physbodys
+	//Define Map Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 318);
 	pb_background->body->SetType(b2_staticBody);
 
@@ -488,6 +551,17 @@ bool ModuleSceneIntro::LoadMap()
 
 	pb_plunger = App->physics->CreateChain(0, 0, plunger, 10);
 
+	pb_border = App->physics->CreateRectangle(30, 370, 20, 20);
+	pb_border->body->SetType(b2_staticBody);
+	pb_border->body->SetActive(false);
+
+	pb_ramp_blue = App->physics->CreateChain(0, 0, blue_ramp, 8, 17, 711);
+	pb_ramp_blue->body->SetType(b2_staticBody);
+	pb_ramp_blue->body->SetActive(false);
+	pb_ramp_red = App->physics->CreateChain(0, 0, red_ramp, 8, 373, 729);
+	pb_ramp_red->body->SetType(b2_staticBody);
+	pb_ramp_red->body->SetActive(false);
+
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_10000, 14));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, wall_launch_ramp, 56));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_bumper, 22));
@@ -508,8 +582,7 @@ bool ModuleSceneIntro::LoadMap()
 		back_elem = back_elem->next;
 	}
 
-	//Define Bumper Physbodys
-
+	//Define Ramp parameters
 	pb_launch_ramp = App->physics->CreateChain(0, 0, launch_ramp_sensor, 8, 77, 277);
 	pb_launch_ramp->body->SetType(b2_staticBody);
 	pb_launch_ramp->body->GetFixtureList()->SetRestitution(1.0F);
@@ -520,6 +593,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_ramp->body->GetFixtureList()->SetRestitution(1.0F);
 	pb_ramp->body->GetFixtureList()->SetFriction(0.2F);
 
+	//Define Bumper Physbodys
 	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42, 40, 40));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_1, 42, 147, 195));
 	pb_bumpers.add(App->physics->CreateChain(0, 0, middle_bumper_2, 44, 225, 165));
@@ -571,16 +645,16 @@ bool ModuleSceneIntro::LoadMap()
 	pb_point_lights.add(App->physics->CreateRectangleSensor(225, 90, 8, 8, -11, -16));
 	pb_point_lights.add(App->physics->CreateRectangleSensor(258, 90, 8, 8, -11, -16));
 
-	pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
+	/*pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
 	pb_arrow_lights.add(App->physics->CreateRectangleSensor(309, 366, 15, 36));
-	pb_arrow_lights.add(App->physics->CreateRectangleSensor(370, 546, 15, 39));
+	pb_arrow_lights.add(App->physics->CreateRectangleSensor(370, 546, 15, 39));*/
 	
-
-
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
 	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);
 	pb_right_push = App->physics->CreateRectangleSensor(384,772,16,16);
 	pb_wormhole_entry = App->physics->CreateRectangleSensor(348, 510, 20, 20);
+	pb_ramp_sensor = App->physics->CreateRectangleSensor(20, 410, 20, 20);
+	pb_ramp_leave = App->physics->CreateRectangleSensor(60, 600, 20, 20);
 
 	//Define Joints
 	//Revolute Joint
@@ -629,7 +703,7 @@ bool ModuleSceneIntro::LoadMap()
 	return true;
 }
 
-void ModuleSceneIntro::Timer(PhysBody* pb, int time)
+void ModuleSceneIntro::Timer(PhysBody* pb, int time, bool value, int type)
 {
 	if (timer)
 	{
@@ -639,7 +713,14 @@ void ModuleSceneIntro::Timer(PhysBody* pb, int time)
 	current_time = SDL_GetTicks() - time_on_entry;
 	if (current_time > time)
 	{
-		pb->light = false;
+		if (type == 0)
+		{
+			pb->light = value;
+		}
+		else if (type == 1)
+		{
+			pb->body->SetActive(value);
+		}
 		timer = true;
 	}
 }
