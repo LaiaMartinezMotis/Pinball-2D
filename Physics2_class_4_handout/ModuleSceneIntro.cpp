@@ -12,7 +12,6 @@
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	
-	circle = NULL;
 	arrows_left.PushBack({ 58,83,29,34 });
 	arrows_left.PushBack({ 29,83,29,34 });
 	arrows_left.PushBack({ 0,83,29,34 });
@@ -42,7 +41,6 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//Initialize textures & audio
-	circle = App->textures->Load("pinball/wheel.png"); 
 	scenario = App->textures->Load("pinball/scenario.png");
 	upper_scenario = App->textures->Load("pinball/upper_scenario.png");
 	ball = App->textures->Load("pinball/ball.png");
@@ -52,9 +50,12 @@ bool ModuleSceneIntro::Start()
 	lv2_fx = App->audio->LoadFx("pinball/lv2.wav");
 	bumper_fx = App->audio->LoadFx("pinball/bumper_fx.wav");
 	littlebumper_fx=App->audio->LoadFx("pinball/littlebump_fx.wav");
-	lights_fx = App->audio->LoadFx("pinball/lights_fx.wav");
 	death_fx = App->audio->LoadFx("pinball/death_fx.wav");
 	arrows_fx = App->audio->LoadFx("pinball/redarrows_fx.wav");
+	plunger_fx = App->audio->LoadFx("pinball/plunger.wav");
+	flipper_fx = App->audio->LoadFx("pinball/flipper.wav");
+	ramp_fx = App->audio->LoadFx("pinball/ramp.wav");
+	red_light_fx = App->audio->LoadFx("pinball/red_light_fx.wav");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -66,9 +67,9 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
-	App->textures->Unload(circle);
 	App->textures->Unload(ball);
 	App->textures->Unload(background_elements);
+	App->textures->Unload(upper_scenario);
 	App->textures->Unload(scenario);
 	return true;
 }
@@ -78,6 +79,10 @@ update_status ModuleSceneIntro::PreUpdate()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		
 		pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+	{
+		App->audio->PlayFx(flipper_fx);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
 		
@@ -90,6 +95,7 @@ update_status ModuleSceneIntro::PreUpdate()
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
 	{
 		plunger_joint->SetMotorSpeed((0.0F, -40.0F));
+		App->audio->PlayFx(plunger_fx);
 	}
 	
 
@@ -435,7 +441,7 @@ update_status ModuleSceneIntro::PostUpdate()
 		App->ui->score_player += 15000;
 	}
 
-	p2List_item<PhysBody*>* pink_light_middle = pb_ovalred_lights.getFirst()->next;
+	p2List_item<PhysBody*>* pink_light_middle = pb_pink_lights.getFirst()->next;
 	if (pink_light_middle != NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
 	{
 		pink_light_middle->next->data->light = false;
@@ -458,7 +464,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (red_item != NULL) {
 			if (bodyB == red_item->data)
 			{
-				/*App->audio->PlayFx(lights_fx);*/
+				App->audio->PlayFx(red_light_fx);
 				App->ui->score_player += 200;
 			}
 			red_item = red_item->next;
@@ -576,14 +582,16 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyB == pb_launch_ramp)
 		{
 			pb_launch_ramp->light = true;
+			App->audio->PlayFx(ramp_fx);
 		}
 		if (bodyB == pb_ramp)
 		{
 			pb_ramp->light = true;
+			App->audio->PlayFx(ramp_fx);
 		}
 		if (bodyB == pb_right_push)
 		{
-			bodyA->body->ApplyLinearImpulse({ -0.01f,-2.0F }, bodyA->body->GetLocalCenter(), true);
+			bodyA->body->ApplyLinearImpulse({ -0.02f,-2.0F }, bodyA->body->GetLocalCenter(), true);
 			ramp_red = true;
 		}
 		if (bodyB == pb_left_push)
@@ -629,7 +637,7 @@ bool ModuleSceneIntro::LoadMap()
 	pb_ball->body->SetBullet(true);
 	pb_ball->body->GetFixtureList()->SetFriction(0.4F);
 	pb_ball->listener = this;
-	life = 4;
+	life = 3;
 
 	//Define Map Physbodys
 	pb_background = App->physics->CreateChain(0, 0, scenario_points, 318);
@@ -673,10 +681,11 @@ bool ModuleSceneIntro::LoadMap()
 	pb_background_elements.add(App->physics->CreateChain(0, 0, up_blocker_2, 18));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, right_slingshot, 16));
 	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
-	pb_background_elements.add(App->physics->CreateChain(0, 0, left_slingshot, 16));
-	pb_background_elements.add(App->physics->CreateRectangle(33, 423, 6, 18));
-	pb_background_elements.add(App->physics->CreateRectangle(64, 436, 6, 18));
-
+	pb_background_elements.add(App->physics->CreateChain(0, 0, block_left, 8));
+	pb_background_elements.add(App->physics->CreateChain(0, 0, block_right, 8));
+	pb_background_elements.add(App->physics->CreateRectangle(33, 423, 6, 10));
+	pb_background_elements.add(App->physics->CreateRectangle(64, 436, 6, 15));
+	
 	p2List_item<PhysBody*>* back_elem = pb_background_elements.getFirst();
 	while (back_elem != NULL)
 	{
