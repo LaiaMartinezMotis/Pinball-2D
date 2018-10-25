@@ -26,7 +26,6 @@ private:
 	void Timer(PhysBody* pb, int time, bool value = false, int type = 0);
 
 public:
-	p2List<PhysBody*>	circles;
 	p2List<PhysBody*>	pb_background_elements;
 	p2List<PhysBody*>	pb_red_lights;
 	p2List<PhysBody*>	pb_ovalred_lights;
