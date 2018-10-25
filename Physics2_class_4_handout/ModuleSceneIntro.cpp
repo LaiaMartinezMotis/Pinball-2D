@@ -104,18 +104,6 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(background_elements, 305, 368, &arrows_right.GetCurrentFrame(), 1.0F);
 	App->renderer->Blit(background_elements, 370, 546, &arrows_down.GetCurrentFrame(), 1.0F);
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-	{
-		pb_ball = (App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 10));
-		pb_ball->listener = this;
-	}
-
-	// Prepare for raycast ------------------------------------------------------
-
-	iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-
 	// All draw functions ------------------------------------------------------
 
 	if (pb_plunger != NULL)
@@ -130,7 +118,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		int x, y;
 		pb_right_bumper->GetRealPosition(x, y);
-		SDL_Rect rect = {135,192,65,125};
+		SDL_Rect rect = { 135,192,65,125 };
 		App->renderer->Blit(background_elements, x, y, &rect);
 
 		Timer(pb_right_bumper, 400);
@@ -182,26 +170,7 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(background_elements, x, y, &rect);
 	}
 
-	if (ramp_red)
-	{
-		Timer(pb_ramp_red, 1000, true, 1);
-	}
-	else
-	{
-		Timer(pb_ramp_red, 1000, false, 1);
-	}
-
-	if (ramp_blue)
-	{
-		Timer(pb_ramp_blue, 1000, true, 1);
-	}
-	else
-	{
-		Timer(pb_ramp_blue, 1000, false, 1);
-	}
-
-
-	//Check if light = true, draw collision sprite
+	// Check if light = true, draw collision sprite
 	p2List_item<PhysBody*>* bumper = pb_bumpers.getFirst();
 	while (bumper != NULL)
 	{
@@ -233,7 +202,7 @@ update_status ModuleSceneIntro::Update()
 	p2List_item<PhysBody*>* pink_light = pb_pink_lights.getFirst();
 	while (pink_light != NULL)
 	{
-		if (pink_light->data->light == true) 
+		if (pink_light->data->light == true)
 		{
 			int x, y;
 			pink_light->data->GetRealPosition(x, y);
@@ -242,8 +211,8 @@ update_status ModuleSceneIntro::Update()
 		}
 		pink_light = pink_light->next;
 	}
-	
-    p2List_item<PhysBody*>* ovalred_light = pb_ovalred_lights.getFirst();
+
+	p2List_item<PhysBody*>* ovalred_light = pb_ovalred_lights.getFirst();
 	while (ovalred_light != NULL)
 	{
 		if (ovalred_light->data->light == true)
@@ -279,7 +248,6 @@ update_status ModuleSceneIntro::Update()
 			point_light->data->GetRealPosition(x, y);
 			SDL_Rect rect = { 21,334,28,30 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, point_light->data->GetRotation());
-			/*Timer(pink_light->data, 200);*/
 		}
 		point_light = point_light->next;
 	}
@@ -293,7 +261,6 @@ update_status ModuleSceneIntro::Update()
 			pointgreen_light->data->GetRealPosition(x, y);
 			SDL_Rect rect = { 26,296,12,12 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, pointgreen_light->data->GetRotation());
-			/*Timer(pink_light->data, 200);*/
 		}
 		pointgreen_light = pointgreen_light->next;
 	}
@@ -307,7 +274,6 @@ update_status ModuleSceneIntro::Update()
 			yellow_light->data->GetRealPosition(x, y);
 			SDL_Rect rect = { 40,310,18,21 };
 			App->renderer->Blit(background_elements, x, y, &rect, 1.0f, yellow_light->data->GetRotation());
-			/*Timer(pink_light->data, 200);*/
 		}
 		yellow_light = yellow_light->next;
 	}
@@ -351,6 +317,41 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, pb_ball->GetRotation());
 	}
 
+
+	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
+
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleSceneIntro::PostUpdate()
+{
+
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	{
+		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
+		pb_ball = (App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 10));
+		pb_ball->listener = this;
+	}
+
+	if (ramp_red)
+	{
+		Timer(pb_ramp_red, 1000, true, 1);
+	}
+	else
+	{
+		Timer(pb_ramp_red, 1000, false, 1);
+	}
+
+	if (ramp_blue)
+	{
+		Timer(pb_ramp_blue, 1000, true, 1);
+	}
+	else
+	{
+		Timer(pb_ramp_blue, 1000, false, 1);
+	}
+
 	if (destroy)
 	{
 		pb_ball->body->GetWorld()->DestroyBody(pb_ball->body);
@@ -381,7 +382,7 @@ update_status ModuleSceneIntro::Update()
 
 	//Check if 3 lights lighted
 	p2List_item<PhysBody*>* ovalred_light_middle = pb_ovalred_lights.getFirst()->next;
-	if (ovalred_light_middle !=NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true)
+	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true)
 	{
 		ovalred_light_middle->next->data->light = false;
 		ovalred_light_middle->data->light = false;
@@ -435,7 +436,7 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	p2List_item<PhysBody*>* pink_light_middle = pb_ovalred_lights.getFirst()->next;
-	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
+	if (pink_light_middle != NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
 	{
 		pink_light_middle->next->data->light = false;
 		pink_light_middle->data->light = false;
@@ -443,10 +444,9 @@ update_status ModuleSceneIntro::Update()
 		App->ui->score_player += 15000;
 	}
 
-	App->renderer->Blit(upper_scenario, 0, 0, NULL, 1.0f);
-
 	return UPDATE_CONTINUE;
 }
+
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
@@ -473,17 +473,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				bumper_item->data->light = true;
 			}
 			bumper_item = bumper_item->next;
-		}
-
-		p2List_item<PhysBody*>* arrow_item = pb_arrow_lights.getFirst();
-		while (arrow_item != NULL) {
-			if (bodyB == arrow_item->data)
-			{
-				/*App->audio->PlayFx(arrows_fx);*/
-				
-				arrow_item->data->light = true;
-			}
-			arrow_item = arrow_item->next;
 		}
 
 		p2List_item<PhysBody*>* pink_item = pb_pink_lights.getFirst();
@@ -594,17 +583,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		}
 		if (bodyB == pb_right_push)
 		{
-			bodyA->body->ApplyLinearImpulse({ 0.0f,-2.0F }, bodyA->body->GetLocalCenter(), true);
+			bodyA->body->ApplyLinearImpulse({ -0.01f,-2.0F }, bodyA->body->GetLocalCenter(), true);
 			ramp_red = true;
 		}
 		if (bodyB == pb_left_push)
 		{
-			bodyA->body->ApplyLinearImpulse({ 0.0f,-2.0F }, bodyA->body->GetLocalCenter(), true);
+			bodyA->body->ApplyLinearImpulse({ 0.01f,-2.0F }, bodyA->body->GetLocalCenter(), true);
 			ramp_blue = true;
 		}
 		if (bodyB == pb_wormhole_entry)
 		{
 			teleport = true;
+			App->ui->score_player += 1000;
 		}
 		if (bodyB == pb_ramp_sensor)
 		{
@@ -697,13 +687,13 @@ bool ModuleSceneIntro::LoadMap()
 	//Define Ramp parameters
 	pb_launch_ramp = App->physics->CreateChain(0, 0, launch_ramp_sensor, 8, 77, 277);
 	pb_launch_ramp->body->SetType(b2_staticBody);
-	pb_launch_ramp->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_launch_ramp->body->GetFixtureList()->SetFriction(0.2F);
+	pb_launch_ramp->body->GetFixtureList()->SetRestitution(1.2F);
+	pb_launch_ramp->body->GetFixtureList()->SetFriction(0.1F);
 
 	pb_ramp = App->physics->CreateChain(0, 0, ramp_sensor, 6, 275, 239);
 	pb_ramp->body->SetType(b2_staticBody);
-	pb_ramp->body->GetFixtureList()->SetRestitution(1.0F);
-	pb_ramp->body->GetFixtureList()->SetFriction(0.2F);
+	pb_ramp->body->GetFixtureList()->SetRestitution(1.2F);
+	pb_ramp->body->GetFixtureList()->SetFriction(0.1F);
 
 	//Define Bumper Physbodys
 	pb_bumpers.add(App->physics->CreateChain(0, 0, up_bumper, 42, 40, 40));
@@ -728,8 +718,8 @@ bool ModuleSceneIntro::LoadMap()
 	while (bump_elem != NULL)
 	{
 		bump_elem->data->body->SetType(b2_staticBody);
-		bump_elem->data->body->GetFixtureList()->SetRestitution(1.0F);
-		bump_elem->data->body->GetFixtureList()->SetFriction(0.2F);
+		bump_elem->data->body->GetFixtureList()->SetRestitution(1.2F);
+		bump_elem->data->body->GetFixtureList()->SetFriction(0.3F);
 		bump_elem = bump_elem->next;
 	}
 	
@@ -768,10 +758,6 @@ bool ModuleSceneIntro::LoadMap()
 	pb_point_lights.add(App->physics->CreateRectangleSensor(192, 90, 8, 8, -11, -16));
 	pb_point_lights.add(App->physics->CreateRectangleSensor(225, 90, 8, 8, -11, -16));
 	pb_point_lights.add(App->physics->CreateRectangleSensor(258, 90, 8, 8, -11, -16));
-
-	/*pb_arrow_lights.add(App->physics->CreateRectangleSensor(186, 448, 15, 34));
-	pb_arrow_lights.add(App->physics->CreateRectangleSensor(309, 366, 15, 36));
-	pb_arrow_lights.add(App->physics->CreateRectangleSensor(370, 546, 15, 39));*/
 	
 	pb_death_sensor = App->physics->CreateRectangleSensor(220, 805, 80, 20);
 	pb_left_push = App->physics->CreateRectangleSensor(25,772,15,16);

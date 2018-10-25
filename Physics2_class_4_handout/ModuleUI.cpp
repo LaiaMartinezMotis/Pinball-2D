@@ -47,6 +47,11 @@ update_status ModuleUI::Update()
 
 	App->fonts->BlitText(394, 362, life_font, life_string);
 
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleUI::PostUpdate()
+{
 	if (App->scene_intro->life == 0)
 	{
 		if (score_player > high_score)
@@ -58,6 +63,7 @@ update_status ModuleUI::Update()
 	}
 
 	return UPDATE_CONTINUE;
+
 }
 
 

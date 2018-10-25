@@ -17,6 +17,7 @@ public:
 	bool Start();
 	update_status PreUpdate();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
@@ -35,7 +36,6 @@ public:
 	p2List<PhysBody*>   pb_yellow_lights;
 	p2List<PhysBody*>   pb_pink_lights;
 	p2List<PhysBody*>   pb_point_lights;
-	p2List<PhysBody*>	pb_arrow_lights;
 	p2List<PhysBody*>	pb_bumpers;
 	p2List<PhysBody*>	pb_little_bumpers;
 
