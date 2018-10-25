@@ -103,7 +103,6 @@ update_status ModuleSceneIntro::PreUpdate()
 		plunger_joint->SetMotorSpeed((0.0F, -40.0F));
 		App->audio->PlayFx(plunger_fx);
 	}
-	
 
 	return UPDATE_CONTINUE;
 }
@@ -546,8 +545,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (pointgreen_item != NULL) {
 			if (bodyB == pointgreen_item->data)
 			{
-				
-
 				pointgreen_item->data->light = true;
 			}
 			pointgreen_item = pointgreen_item->next;
@@ -626,7 +623,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		//Death
 		if (bodyB == pb_death_sensor)
 		{
-			/*App->audio->PlayFx(death_fx);*/
+			App->audio->PlayFx(death_fx);
 			destroy = true;
 			ramp_blue = false;
 			ramp_red = false;
@@ -641,7 +638,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->body->SetBullet(true);
-	pb_ball->body->GetFixtureList()->SetFriction(0.4F);
+	pb_ball->body->GetFixtureList()->SetFriction(-0.4F);
 	pb_ball->listener = this;
 	life = 3;
 

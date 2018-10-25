@@ -35,7 +35,7 @@ update_status ModuleUI::Update()
 	//Print Score
 	sprintf_s(score_string, 10, "%1d", score_player);
 
-	App->fonts->BlitText(180, 12, score_font, score_string);
+	App->fonts->BlitText(168, 12, score_font, score_string);
 
 	//Print High Score
 	sprintf_s(high_score_string, 10, "%1d", high_score);
