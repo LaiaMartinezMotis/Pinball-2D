@@ -58,6 +58,7 @@ bool ModuleSceneIntro::Start()
 	ramp_fx = App->audio->LoadFx("pinball/ramp.wav");
 	red_light_fx = App->audio->LoadFx("pinball/red_light_fx.wav");
 	lightson_fx = App->audio->LoadFx("pinball/lightson_fx.wav");
+	combo_fx = App->audio->LoadFx("pinball/combo_fx.wav");
 
 
 	//Play BSO
@@ -357,20 +358,20 @@ update_status ModuleSceneIntro::PostUpdate()
 
 	if (ramp_red)
 	{
-		Timer(pb_ramp_red, 1000, true, 1);
+		Timerred(pb_ramp_red, 1000, true, 1);
 	}
 	else
 	{
-		Timer(pb_ramp_red, 1000, false, 1);
+		Timerred(pb_ramp_red, 1000, false, 1);
 	}
 
 	if (ramp_blue)
 	{
-		Timer(pb_ramp_blue, 1000, true, 1);
+		Timerblue(pb_ramp_blue, 1000, true, 1);
 	}
 	else
 	{
-		Timer(pb_ramp_blue, 1000, false, 1);
+		Timerblue(pb_ramp_blue, 1000, false, 1);
 	}
 
 	if (destroy)
@@ -867,6 +868,49 @@ bool ModuleSceneIntro::LoadMap()
 	return true;
 }
 
+void ModuleSceneIntro::Timerblue(PhysBody* pb, int time, bool value, int type)
+{
+	if (timerblue)
+	{
+		time_on_entry = SDL_GetTicks();
+		timerblue = false;
+	}
+	current_time = SDL_GetTicks() - time_on_entry;
+	if (current_time > time)
+	{
+		if (type == 0)
+		{
+			pb->light = value;
+		}
+		else if (type == 1)
+		{
+			pb->body->SetActive(value);
+		}
+		timerblue = true;
+	}
+}
+
+void ModuleSceneIntro::Timerred(PhysBody* pb, int time, bool value, int type)
+{
+	if (timered)
+	{
+		time_on_entry = SDL_GetTicks();
+		timered = false;
+	}
+	current_time = SDL_GetTicks() - time_on_entry;
+	if (current_time > time)
+	{
+		if (type == 0)
+		{
+			pb->light = value;
+		}
+		else if (type == 1)
+		{
+			pb->body->SetActive(value);
+		}
+		timered = true;
+	}
+}
 void ModuleSceneIntro::Timer(PhysBody* pb, int time, bool value, int type)
 {
 	if (timer)

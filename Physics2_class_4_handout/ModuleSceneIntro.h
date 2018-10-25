@@ -25,6 +25,8 @@ private:
 	bool LoadMap();
 	//The type means the parameter we want to change, if 0 is light, if 1 is active
 	void Timer(PhysBody* pb, int time, bool value = false, int type = 0);
+	void Timerred(PhysBody* pb, int time, bool value = false, int type = 0);
+	void Timerblue(PhysBody* pb, int time, bool value = false, int type = 0);
 
 public:
 	p2List<PhysBody*>	pb_background_elements;
@@ -89,6 +91,8 @@ public:
 	p2Animation arrows_down;
 
 	bool timer = true;
+	bool timered = true;
+	bool timerblue = true;
 	int time_on_entry = 0;
 	int current_time = 0;
 
