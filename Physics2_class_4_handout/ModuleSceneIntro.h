@@ -72,6 +72,8 @@ public:
 	uint lv2_fx;
 	uint bumper_fx;
 	uint littlebumper_fx;
+	uint lightson_fx;
+	uint combo_fx;
 	uint death_fx;
 	uint arrows_fx;
     uint greenbump_fx;
