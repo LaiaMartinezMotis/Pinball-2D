@@ -58,7 +58,10 @@ bool ModuleSceneIntro::Start()
 	ramp_fx = App->audio->LoadFx("pinball/ramp.wav");
 	red_light_fx = App->audio->LoadFx("pinball/red_light_fx.wav");
 	lightson_fx = App->audio->LoadFx("pinball/lightson_fx.wav");
-	combo_fx=App->audio->LoadFx("pinball/combo_fx.wav");
+
+
+	//Play BSO
+	App->audio->PlayMusic("pinball/bso_music.ogg");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -78,6 +81,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 update_status ModuleSceneIntro::PreUpdate()
 {
+
 	//Flippers Movement
 	if (!death)
 	{
