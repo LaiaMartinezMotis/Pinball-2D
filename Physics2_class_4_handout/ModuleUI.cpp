@@ -33,12 +33,12 @@ bool ModuleUI::CleanUp()
 update_status ModuleUI::Update()
 {
 	//Print Score
-	sprintf_s(score_string, 7, "%1d", score_player);
+	sprintf_s(score_string, 10, "%1d", score_player);
 
-	App->fonts->BlitText(180, 10, score_font, score_string);
+	App->fonts->BlitText(180, 12, score_font, score_string);
 
 	//Print High Score
-	sprintf_s(high_score_string, 7, "%1d", high_score);
+	sprintf_s(high_score_string, 10, "%1d", high_score);
 
 	App->fonts->BlitText(320, 36, score_font, high_score_string);
 
@@ -59,7 +59,7 @@ update_status ModuleUI::PostUpdate()
 			high_score = score_player;
 		}
 		score_player = 0;
-		App->scene_intro->life = 2;
+		App->scene_intro->life = 3;
 	}
 
 	return UPDATE_CONTINUE;

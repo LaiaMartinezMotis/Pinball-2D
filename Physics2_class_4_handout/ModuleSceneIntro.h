@@ -64,7 +64,6 @@ public:
 	b2RevoluteJoint*    left_joint;
 	b2PrismaticJoint*   plunger_joint;
 	
-	SDL_Texture* circle = nullptr;
 	SDL_Texture* ball = nullptr;
 	SDL_Texture* scenario = nullptr;
 	SDL_Texture* upper_scenario = nullptr;
@@ -73,11 +72,14 @@ public:
 	uint lv2_fx;
 	uint bumper_fx;
 	uint littlebumper_fx;
-	uint lights_fx;
 	uint death_fx;
 	uint arrows_fx;
+    uint greenbump_fx;
+	uint plunger_fx;
 	uint flipper_fx;
-	uint greenbump_fx;
+	uint ramp_fx;
+	uint red_light_fx;
+
 
 	p2Animation arrows_left;
 	p2Animation arrows_right;
