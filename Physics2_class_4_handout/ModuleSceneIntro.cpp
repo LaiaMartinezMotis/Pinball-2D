@@ -57,7 +57,8 @@ bool ModuleSceneIntro::Start()
 	flipper_fx = App->audio->LoadFx("pinball/flipper.wav");
 	ramp_fx = App->audio->LoadFx("pinball/ramp.wav");
 	red_light_fx = App->audio->LoadFx("pinball/red_light_fx.wav");
-
+	lightson_fx = App->audio->LoadFx("pinball/lightson_fx.wav");
+	combo_fx=App->audio->LoadFx("pinball/combo_fx.wav");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -395,6 +396,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* ovalred_light_middle = pb_ovalred_lights.getFirst()->next;
 	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		ovalred_light_middle->next->data->light = false;
 		ovalred_light_middle->data->light = false;
 		ovalred_light_middle->prev->data->light = false;
@@ -404,6 +406,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* ovalblue_light_middle = pb_ovalblue_lights.getFirst()->next;
 	if (ovalblue_light_middle != NULL && ovalblue_light_middle->prev->data->light == true && ovalblue_light_middle->data->light == true && ovalblue_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		ovalblue_light_middle->next->data->light = false;
 		ovalblue_light_middle->data->light = false;
 		ovalblue_light_middle->prev->data->light = false;
@@ -413,6 +416,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* pointgreen_light_middle = pb_pointgreen_lights.getFirst()->next;
 	if (pointgreen_light_middle != NULL && pointgreen_light_middle->prev->data->light == true && pointgreen_light_middle->data->light == true && pointgreen_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		pointgreen_light_middle->next->data->light = false;
 		pointgreen_light_middle->data->light = false;
 		pointgreen_light_middle->prev->data->light = false;
@@ -422,6 +426,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* yellow_light_middle = pb_yellow_lights.getFirst()->next;
 	if (yellow_light_middle != NULL && yellow_light_middle->prev->data->light == true && yellow_light_middle->data->light == true && yellow_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		yellow_light_middle->next->data->light = false;
 		yellow_light_middle->data->light = false;
 		yellow_light_middle->prev->data->light = false;
@@ -431,6 +436,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* point_light_middle = pb_point_lights.getFirst()->next;
 	if (point_light_middle != NULL && point_light_middle->prev->data->light == true && point_light_middle->data->light == true && point_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		point_light_middle->next->data->light = false;
 		point_light_middle->data->light = false;
 		point_light_middle->prev->data->light = false;
@@ -440,6 +446,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* green_light_middle = pb_green_lights.getFirst()->next;
 	if (green_light_middle != NULL && green_light_middle->prev->data->light == true && green_light_middle->data->light == true && green_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		green_light_middle->next->data->light = false;
 		green_light_middle->data->light = false;
 		green_light_middle->prev->data->light = false;
@@ -449,6 +456,7 @@ update_status ModuleSceneIntro::PostUpdate()
 	p2List_item<PhysBody*>* pink_light_middle = pb_pink_lights.getFirst()->next;
 	if (pink_light_middle != NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
 	{
+		App->audio->PlayFx(combo_fx);
 		pink_light_middle->next->data->light = false;
 		pink_light_middle->data->light = false;
 		pink_light_middle->prev->data->light = false;
@@ -490,7 +498,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (pink_item != NULL) {
 			if (bodyB == pink_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				App->audio->PlayFx(lightson_fx);
 
 				pink_item->data->light = true;
 			}
@@ -501,7 +509,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (yellow_item != NULL) {
 			if (bodyB == yellow_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				App->audio->PlayFx(lightson_fx);
 
 				yellow_item->data->light = true;
 			}
@@ -512,7 +520,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (green_item != NULL) {
 			if (bodyB == green_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				App->audio->PlayFx(lightson_fx);
 
 				green_item->data->light = true;
 			}
@@ -523,7 +531,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (point_item != NULL) {
 			if (bodyB == point_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				App->audio->PlayFx(lightson_fx);
 
 				point_item->data->light = true;
 			}
@@ -534,7 +542,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (ovalred_item != NULL) {
 			if (bodyB == ovalred_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				App->audio->PlayFx(lightson_fx);
 
 				ovalred_item->data->light = true;
 			}
@@ -555,7 +563,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			if (bodyB == ovalblue_item->data)
 			{
 				
-
+				App->audio->PlayFx(lightson_fx);
 				ovalblue_item->data->light = true;
 			}
 			ovalblue_item = ovalblue_item->next;
