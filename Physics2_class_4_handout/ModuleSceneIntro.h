@@ -76,6 +76,8 @@ public:
 	uint lights_fx;
 	uint death_fx;
 	uint arrows_fx;
+	uint flipper_fx;
+	uint greenbump_fx;
 
 	p2Animation arrows_left;
 	p2Animation arrows_right;

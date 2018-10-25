@@ -55,6 +55,8 @@ bool ModuleSceneIntro::Start()
 	lights_fx = App->audio->LoadFx("pinball/lights_fx.wav");
 	death_fx = App->audio->LoadFx("pinball/death_fx.wav");
 	arrows_fx = App->audio->LoadFx("pinball/redarrows_fx.wav");
+	flipper_fx = App->audio->LoadFx("pinball/flipper_fx.wav");
+	greenbump_fx= App->audio->LoadFx("pinball/greenbump_fx.wav");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -75,12 +77,14 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::PreUpdate()
 {
 	//Flippers Movement
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
 		
+		App->audio->PlayFx(flipper_fx);
 		pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
 	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+
+		App->audio->PlayFx(flipper_fx);
 		pb_right_flipper->body->ApplyAngularImpulse(2.0F, true);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
@@ -468,7 +472,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (bumper_item != NULL) {
 			if (bodyB == bumper_item->data)
 			{
-				/*App->audio->PlayFx(bumper_fx);*/
+				App->audio->PlayFx(littlebumper_fx);
 				App->ui->score_player += 500;
 				bumper_item->data->light = true;
 			}
@@ -534,7 +538,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (pointgreen_item != NULL) {
 			if (bodyB == pointgreen_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				
 
 				pointgreen_item->data->light = true;
 			}
@@ -545,7 +549,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (ovalblue_item != NULL) {
 			if (bodyB == ovalblue_item->data)
 			{
-				/*App->audio->PlayFx(arrows_fx);*/
+				
 
 				ovalblue_item->data->light = true;
 			}
@@ -556,7 +560,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		while (little_bumper_item != NULL) {
 			if (bodyB == little_bumper_item->data)
 			{
-				/*App->audio->PlayFx(littlebumper_fx);*/
+				App->audio->PlayFx(littlebumper_fx);
 				App->ui->score_player += 500;
 				little_bumper_item->data->light = true;
 			}
@@ -565,12 +569,12 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (bodyB == pb_left_bumper)
 		{
-			/*App->audio->PlayFx(bonus_fx);*/
+			App->audio->PlayFx(greenbump_fx);
 			pb_left_bumper->light = true;
 		}
 		if (bodyB == pb_right_bumper)
 		{
-			/*App->audio->PlayFx(bonus_fx);*/
+			App->audio->PlayFx(greenbump_fx);
 			pb_right_bumper->light = true;
 		}
 		if (bodyB == pb_launch_ramp)
