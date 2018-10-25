@@ -94,6 +94,7 @@ public:
 	bool destroy = false;
 	bool teleport = false;
 	bool block = false;
+	bool death = false;
 	bool ramp_red = false;
 	bool ramp_blue = false;
 	int life = 0;

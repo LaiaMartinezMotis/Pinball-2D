@@ -3,6 +3,8 @@
 #include "Globals.h"
 #include "p2Point.h"
 
+struct SDL_Texture;
+
 class ModuleUI : public Module
 {
 public:
@@ -15,11 +17,17 @@ public:
 	bool CleanUp();
 
 public:
+	SDL_Texture* game_over = nullptr;
+
 	int score_font = 0;
 	int life_font = 0;
-	int score_player = 1000000;
+	int score_player = 0;
 	int high_score = 0;
 	char score_string[10];
 	char high_score_string[10];
 	char life_string[4];
+
+	bool timer = true;
+	int current_time = 0, time_on_entry = 0;
+
 };

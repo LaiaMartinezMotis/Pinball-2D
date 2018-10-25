@@ -79,30 +79,35 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::PreUpdate()
 {
 	//Flippers Movement
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		
-		
-		pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
-	}
+	if (!death)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
-	{
-		App->audio->PlayFx(flipper_fx);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		
+			pb_left_flipper->body->ApplyAngularImpulse(-2.0F, true);
+		}
 
-		pb_right_flipper->body->ApplyAngularImpulse(2.0F, true);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) 
-	{
-		plunger_joint->SetMotorSpeed((0.0F, 1.0F));
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
-	{
-		plunger_joint->SetMotorSpeed((0.0F, -40.0F));
-		App->audio->PlayFx(plunger_fx);
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+		{
+			App->audio->PlayFx(flipper_fx);
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+
+
+			pb_right_flipper->body->ApplyAngularImpulse(2.0F, true);
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			plunger_joint->SetMotorSpeed((0.0F, 1.0F));
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
+		{
+			plunger_joint->SetMotorSpeed((0.0F, -40.0F));
+			App->audio->PlayFx(plunger_fx);
+		}
 	}
 
 	return UPDATE_CONTINUE;
@@ -394,73 +399,98 @@ update_status ModuleSceneIntro::PostUpdate()
 
 	//Check if 3 lights lighted
 	p2List_item<PhysBody*>* ovalred_light_middle = pb_ovalred_lights.getFirst()->next;
-	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true)
+	if (ovalred_light_middle != NULL && ovalred_light_middle->prev->data->light == true && ovalred_light_middle->data->light == true && ovalred_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 5000;
+		}
 		ovalred_light_middle->next->data->light = false;
 		ovalred_light_middle->data->light = false;
 		ovalred_light_middle->prev->data->light = false;
-		App->ui->score_player += 5000;
 	}
 
 	p2List_item<PhysBody*>* ovalblue_light_middle = pb_ovalblue_lights.getFirst()->next;
-	if (ovalblue_light_middle != NULL && ovalblue_light_middle->prev->data->light == true && ovalblue_light_middle->data->light == true && ovalblue_light_middle->next->data->light == true)
+	if (ovalblue_light_middle != NULL && ovalblue_light_middle->prev->data->light == true && ovalblue_light_middle->data->light == true && ovalblue_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 5000;
+		}
 		ovalblue_light_middle->next->data->light = false;
 		ovalblue_light_middle->data->light = false;
 		ovalblue_light_middle->prev->data->light = false;
-		App->ui->score_player += 5000;
+		
 	}
 
 	p2List_item<PhysBody*>* pointgreen_light_middle = pb_pointgreen_lights.getFirst()->next;
-	if (pointgreen_light_middle != NULL && pointgreen_light_middle->prev->data->light == true && pointgreen_light_middle->data->light == true && pointgreen_light_middle->next->data->light == true)
+	if (pointgreen_light_middle != NULL && pointgreen_light_middle->prev->data->light == true && pointgreen_light_middle->data->light == true && pointgreen_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 20000;
+		}
 		pointgreen_light_middle->next->data->light = false;
 		pointgreen_light_middle->data->light = false;
 		pointgreen_light_middle->prev->data->light = false;
-		App->ui->score_player += 20000;
+		
 	}
 
 	p2List_item<PhysBody*>* yellow_light_middle = pb_yellow_lights.getFirst()->next;
-	if (yellow_light_middle != NULL && yellow_light_middle->prev->data->light == true && yellow_light_middle->data->light == true && yellow_light_middle->next->data->light == true)
+	if (yellow_light_middle != NULL && yellow_light_middle->prev->data->light == true && yellow_light_middle->data->light == true && yellow_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 15000;
+		}
 		yellow_light_middle->next->data->light = false;
 		yellow_light_middle->data->light = false;
 		yellow_light_middle->prev->data->light = false;
-		App->ui->score_player += 15000;
+		
 	}
 
 	p2List_item<PhysBody*>* point_light_middle = pb_point_lights.getFirst()->next;
-	if (point_light_middle != NULL && point_light_middle->prev->data->light == true && point_light_middle->data->light == true && point_light_middle->next->data->light == true)
+	if (point_light_middle != NULL && point_light_middle->prev->data->light == true && point_light_middle->data->light == true && point_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 15000;
+		}
 		point_light_middle->next->data->light = false;
 		point_light_middle->data->light = false;
 		point_light_middle->prev->data->light = false;
-		App->ui->score_player += 15000;
 	}
 
 	p2List_item<PhysBody*>* green_light_middle = pb_green_lights.getFirst()->next;
-	if (green_light_middle != NULL && green_light_middle->prev->data->light == true && green_light_middle->data->light == true && green_light_middle->next->data->light == true)
+	if (green_light_middle != NULL && green_light_middle->prev->data->light == true && green_light_middle->data->light == true && green_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 15000;
+		}
 		green_light_middle->next->data->light = false;
 		green_light_middle->data->light = false;
 		green_light_middle->prev->data->light = false;
-		App->ui->score_player += 15000;
 	}
 
 	p2List_item<PhysBody*>* pink_light_middle = pb_pink_lights.getFirst()->next;
-	if (pink_light_middle != NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true)
+	if (pink_light_middle != NULL && pink_light_middle->prev->data->light == true && pink_light_middle->data->light == true && pink_light_middle->next->data->light == true || death == true)
 	{
-		App->audio->PlayFx(combo_fx);
+		
+		if (!death)
+		{
+			App->audio->PlayFx(combo_fx);
+			App->ui->score_player += 15000;
+		}
 		pink_light_middle->next->data->light = false;
 		pink_light_middle->data->light = false;
 		pink_light_middle->prev->data->light = false;
-		App->ui->score_player += 15000;
 	}
 
 	return UPDATE_CONTINUE;
@@ -646,7 +676,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->body->SetBullet(true);
-	pb_ball->body->GetFixtureList()->SetFriction(-0.4F);
+	pb_ball->body->GetFixtureList()->SetFriction(0.4F);
 	pb_ball->listener = this;
 	life = 3;
 
