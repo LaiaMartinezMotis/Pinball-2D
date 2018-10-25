@@ -58,7 +58,10 @@ bool ModuleSceneIntro::Start()
 	ramp_fx = App->audio->LoadFx("pinball/ramp.wav");
 	red_light_fx = App->audio->LoadFx("pinball/red_light_fx.wav");
 	lightson_fx = App->audio->LoadFx("pinball/lightson_fx.wav");
-	combo_fx=App->audio->LoadFx("pinball/combo_fx.wav");
+
+
+	//Play BSO
+	App->audio->PlayMusic("pinball/bso_music.ogg");
 
 	//Create Physbodys
 	ret = LoadMap();
@@ -78,6 +81,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 update_status ModuleSceneIntro::PreUpdate()
 {
+
 	//Flippers Movement
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		
@@ -646,7 +650,7 @@ bool ModuleSceneIntro::LoadMap()
 	//Create Ball
 	pb_ball = (App->physics->CreateCircle(414, 626, 10));
 	pb_ball->body->SetBullet(true);
-	pb_ball->body->GetFixtureList()->SetFriction(-0.4F);
+	pb_ball->body->GetFixtureList()->SetFriction(0.4F);
 	pb_ball->listener = this;
 	life = 3;
 

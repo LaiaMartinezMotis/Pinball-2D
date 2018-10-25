@@ -68,6 +68,7 @@ public:
 	SDL_Texture* scenario = nullptr;
 	SDL_Texture* upper_scenario = nullptr;
 	SDL_Texture* background_elements = nullptr;
+	uint bso_fx;
 	uint bonus_fx;
 	uint lv2_fx;
 	uint bumper_fx;
