@@ -9,6 +9,7 @@ Pinball videogame created by Laia Martinez Motis and Alex Moralers Garcia, two s
 * __[Right flipper]:__ Right arrow
 * __[Left flipper]:__ Left arrow
 * __[Plunger]:__ Down arrow
+* __[Exit Game]:__ Escape
 
 ## Debug Controls
 * __[F1]:__ Debug features, draw all shapes and allow to use a mouse joint.
