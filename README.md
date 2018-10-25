@@ -12,12 +12,14 @@ Pinball videogame created by Laia Martinez Motis and Alex Moralers Garcia, two s
 
 ## Debug Controls
 * __[F1]:__ Debug features, draw all shapes and allow to use a mouse joint.
-* __[F2]:__ Create New ball
+* __[F2]:__ Create new ball & destroys the old one.
 
 ## List of differences
 * In the original there was a ramp at the left of the map, under the purple one. In our game the ramp is blocked.
 * The lights that do not score are not implemented in our game, except from the pink arrow sequence.
 * In order to make the score clearer, the game uses a different typography from the original.
+* When the player loses all lifes, Game Over appears in the screen for 1-2 seconds and the platyer can't use the controls. In the original game, it pauses and shows the player the TOP scores.
+* In the original game there's a yellow circle that teleports the ball. In our game it does not exist.
 
 ## Combo implemenetd
 * When three lights of the same color are lit, they will turn off and the player will receive score points.
